@@ -7,3 +7,52 @@
 [Parent 31411, IPC I/O Parent] WARNING: process 31669 exited on signal 15: file ipc/chromium/src/chrome/common/process_watcher_posix_sigchld.cc:161
 [Parent 31411, IPC I/O Parent] WARNING: process 31647 exited on signal 15: file ipc/chromium/src/chrome/common/process_watcher_posix_sigchld.cc:161
 [Parent 31411, IPC I/O Parent] WARNING: process 31575 exited on signal 15: file ipc/chromium/src/chrome/common/process_watcher_posix_sigchld.cc:161
+Error sending from webContents:  Error: Render frame was disposed before WebFrameMain could be accessed
+    at WebContents.send (node:electron/js2c/browser_init:1:93961)
+    at MainWindow.sendContent (file:///usr/lib/unityhub/resources/app.asar/.vite/build/resolvePreloadPath-DjluG_d5.js:734:16)
+    at file:///usr/lib/unityhub/resources/app.asar/.vite/build/EventBroadcaster-DEVw-kNH.js:80:6
+    at Set.forEach (<anonymous>)
+    at #broadcastToWindows (file:///usr/lib/unityhub/resources/app.asar/.vite/build/EventBroadcaster-DEVw-kNH.js:79:17)
+    at EventBroadcaster.broadcast (file:///usr/lib/unityhub/resources/app.asar/.vite/build/EventBroadcaster-DEVw-kNH.js:47:54)
+    at FeatureFlagsService.broadcastFlagChanges (file:///usr/lib/unityhub/resources/app.asar/.vite/build/FeatureFlagsService-hDdEeMIT.js:4967:26)
+    at FeatureFlagsService.handleNewVariants (file:///usr/lib/unityhub/resources/app.asar/.vite/build/FeatureFlagsService-hDdEeMIT.js:4903:9)
+    at FeatureFlagsService.fetchVariants (file:///usr/lib/unityhub/resources/app.asar/.vite/build/FeatureFlagsService-hDdEeMIT.js:4875:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Error sending from webContents:  Error: Render frame was disposed before WebFrameMain could be accessed
+    at WebContents.send (node:electron/js2c/browser_init:1:93961)
+    at MainWindow.sendContent (file:///usr/lib/unityhub/resources/app.asar/.vite/build/resolvePreloadPath-DjluG_d5.js:734:16)
+    at file:///usr/lib/unityhub/resources/app.asar/.vite/build/EventBroadcaster-DEVw-kNH.js:80:6
+    at Set.forEach (<anonymous>)
+    at #broadcastToWindows (file:///usr/lib/unityhub/resources/app.asar/.vite/build/EventBroadcaster-DEVw-kNH.js:79:17)
+    at EventBroadcaster.broadcast (file:///usr/lib/unityhub/resources/app.asar/.vite/build/EventBroadcaster-DEVw-kNH.js:47:54)
+    at IdentityProvider.publishUpdates (file:///usr/lib/unityhub/resources/app.asar/.vite/build/IdentityProvider-B-K6sBtI.js:476:26)
+    at Object.callback (file:///usr/lib/unityhub/resources/app.asar/.vite/build/IdentityProvider-B-K6sBtI.js:527:9)
+    at dispatchEnvelope (file:///usr/lib/unityhub/resources/app.asar/.vite/build/dist-EE3VJpwd.js:215:8)
+    at Object.publish (file:///usr/lib/unityhub/resources/app.asar/.vite/build/dist-EE3VJpwd.js:241:18)
+Error sending from webContents:  Error: Render frame was disposed before WebFrameMain could be accessed
+    at WebContents.send (node:electron/js2c/browser_init:1:93961)
+    at MainWindow.sendContent (file:///usr/lib/unityhub/resources/app.asar/.vite/build/resolvePreloadPath-DjluG_d5.js:734:16)
+    at file:///usr/lib/unityhub/resources/app.asar/.vite/build/EventBroadcaster-DEVw-kNH.js:80:6
+    at Set.forEach (<anonymous>)
+    at #broadcastToWindows (file:///usr/lib/unityhub/resources/app.asar/.vite/build/EventBroadcaster-DEVw-kNH.js:79:17)
+    at EventBroadcaster.broadcast (file:///usr/lib/unityhub/resources/app.asar/.vite/build/EventBroadcaster-DEVw-kNH.js:47:54)
+    at #checkActivationByVersion (file:///usr/lib/unityhub/resources/app.asar/.vite/build/AssistantService-DmPYkKiC.js:703:26)
+    at Object.callback (file:///usr/lib/unityhub/resources/app.asar/.vite/build/AssistantService-DmPYkKiC.js:718:34)
+    at dispatchEnvelope (file:///usr/lib/unityhub/resources/app.asar/.vite/build/dist-EE3VJpwd.js:215:8)
+    at Object.publish (file:///usr/lib/unityhub/resources/app.asar/.vite/build/dist-EE3VJpwd.js:241:18)
+Error sending from webContents:  Error: Render frame was disposed before WebFrameMain could be accessed
+    at WebContents.send (node:electron/js2c/browser_init:1:93961)
+    at MainWindow.sendContent (file:///usr/lib/unityhub/resources/app.asar/.vite/build/resolvePreloadPath-DjluG_d5.js:734:16)
+    at file:///usr/lib/unityhub/resources/app.asar/.vite/build/EventBroadcaster-DEVw-kNH.js:80:6
+    at Set.forEach (<anonymous>)
+    at #broadcastToWindows (file:///usr/lib/unityhub/resources/app.asar/.vite/build/EventBroadcaster-DEVw-kNH.js:79:17)
+    at EventBroadcaster.broadcast (file:///usr/lib/unityhub/resources/app.asar/.vite/build/EventBroadcaster-DEVw-kNH.js:47:54)
+    at AssistantService.stop (file:///usr/lib/unityhub/resources/app.asar/.vite/build/AssistantService-DmPYkKiC.js:869:26)
+    at Object.callback (file:///usr/lib/unityhub/resources/app.asar/.vite/build/AssistantService-DmPYkKiC.js:720:10)
+    at dispatchEnvelope (file:///usr/lib/unityhub/resources/app.asar/.vite/build/dist-EE3VJpwd.js:215:8)
+    at Object.publish (file:///usr/lib/unityhub/resources/app.asar/.vite/build/dist-EE3VJpwd.js:241:18)
+[Parent 31411, IPC I/O Parent] WARNING: process 62712 exited on signal 15: file ipc/chromium/src/chrome/common/process_watcher_posix_sigchld.cc:161
+[Parent 31411, IPC I/O Parent] WARNING: process 62718 exited on signal 15: file ipc/chromium/src/chrome/common/process_watcher_posix_sigchld.cc:161
+[Parent 31411, IPC I/O Parent] WARNING: process 62724 exited on signal 15: file ipc/chromium/src/chrome/common/process_watcher_posix_sigchld.cc:161
+[Parent 31411, IPC I/O Parent] WARNING: process 62602 exited on signal 15: file ipc/chromium/src/chrome/common/process_watcher_posix_sigchld.cc:161
+[Parent 31411, IPC I/O Parent] WARNING: process 67235 exited on signal 15: file ipc/chromium/src/chrome/common/process_watcher_posix_sigchld.cc:161
