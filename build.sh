@@ -60,7 +60,7 @@ if [ $CODE -ne 0 ] || [ ! -f "$OUT/AlbumBlades/manifest.json" ]; then
   exit 1
 fi
 python3 -c "import json,sys;p=sys.argv[1];m=json.load(open(p));m['Name']='AlbumBlades';json.dump(m,open(p,'w'),indent=2)" "$OUT/AlbumBlades/manifest.json"
-# mod.io wants the files at the top of the zip (no wrapping folder)
-(cd "$OUT/AlbumBlades" && rm -f ../AlbumBlades.zip && zip -qr ../AlbumBlades.zip .)
+# Zip with the AlbumBlades folder inside, like working mod.io mods (bundle paths expect Mods/AlbumBlades/)
+(cd "$OUT" && rm -f AlbumBlades.zip && zip -qr AlbumBlades.zip AlbumBlades)
 grep "\[AlbumBlades\]" "$LOG" | tail -15
 echo; echo "SUCCESS: dist/AlbumBlades.zip is ready. Right-click it in the Explorer and choose Download."
