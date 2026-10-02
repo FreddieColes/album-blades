@@ -73,23 +73,35 @@ if [ ! -d "$AP_DIR" ]; then
   hub install-modules --version "$VER" --module android --childModules || echo "Hub install-modules returned an error"
 fi
 if [ ! -d "$AP_DIR" ]; then
-  echo "Hub route failed, trying direct downloads"
-  mkdir -p /tmp/unitydl/android
+  echo "Hub route failed, using the Android package directly"
+  PKG=/workspaces/android-support.pkg
   BASE="https://download.unity3d.com/download_unity/$CS"
-  for f in "LinuxEditorTargetInstaller/UnitySetup-Android-Support-for-Editor-$VER.tar.xz" \
-           "MacEditorTargetInstaller/UnitySetup-Android-Support-for-Editor-$VER.pkg"; do
-    echo "Trying $BASE/$f"
-    if wget --progress=dot:giga -O /tmp/unitydl/android.pkg "$BASE/$f"; then
-      cd /tmp/unitydl/android
-      case "$f" in
-        *.tar.xz) tar -xJf ../android.pkg ;;
-        *.pkg) 7z x -y ../android.pkg >/dev/null; for pl in $(find . -name Payload*); do (zcat "$pl" 2>/dev/null || cat "$pl") | cpio -idm --quiet 2>/dev/null || true; done ;;
-      esac
-      cd - >/dev/null
-      AP=$(find /tmp/unitydl/android -type d -name AndroidPlayer | head -1)
-      if [ -n "$AP" ]; then mkdir -p "$(dirname "$AP_DIR")"; mv "$AP" "$AP_DIR"; break; fi
-    fi
+  if [ ! -s "$PKG" ]; then
+    wget --progress=dot:giga -O "$PKG" "$BASE/MacEditorTargetInstaller/UnitySetup-Android-Support-for-Editor-$VER.pkg" || rm -f "$PKG"
+  fi
+  W=/tmp/unitydl/android; rm -rf "$W"; mkdir -p "$W"
+  cp "$PKG" "$W/android.pkg"
+  # Unpack archives inside archives until the Android editor DLL turns up
+  for round in 1 2 3 4 5; do
+    DLL=$(find "$W" -name "UnityEditor.Android.Extensions.dll" | head -1)
+    [ -n "$DLL" ] && break
+    echo "Unpack round $round"
+    find "$W" -type f \( -name "*.pkg" -o -name "Payload*" -o -name "*.cpio" -o -name "*.gz" -o -name "*.xar" -o -name "*.tar" -o -name "*.xz" \) ! -name "*.done" | while read -r f; do
+      d="$f.x"; mkdir -p "$d"
+      7z x -y -o"$d" "$f" >/dev/null 2>&1 || (cd "$d" && (zcat "$f" 2>/dev/null || cat "$f") | cpio -idm --quiet 2>/dev/null) || true
+      mv "$f" "$f.done"
+    done
   done
+  DLL=$(find "$W" -name "UnityEditor.Android.Extensions.dll" | head -1)
+  if [ -n "$DLL" ]; then
+    SRC=$(dirname "$DLL")
+    echo "Found Android player files at ${SRC#$W/}"
+    mkdir -p "$(dirname "$AP_DIR")"
+    rm -rf "$AP_DIR"; mv "$SRC" "$AP_DIR"
+  else
+    echo "Could not find the Android files. Package layout:"
+    find "$W" -maxdepth 6 -type d | sed "s#$W/##" | head -40
+  fi
   rm -rf /tmp/unitydl
 fi
 if [ -d "$AP_DIR" ]; then echo "Android support installed"; else echo "ANDROID SUPPORT FAILED - send Claude the lines above"; exit 1; fi
