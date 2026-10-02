@@ -25,12 +25,29 @@ rsync -a --delete "$HERE/mod/Assets/AlbumBlades/" "$SDK/Assets/AlbumBlades/" --e
 mkdir -p "$SDK/BuildStaging/Catalogs/Mods"
 rsync -a --delete "$HERE/mod/Catalog/AlbumBlades/" "$SDK/BuildStaging/Catalogs/Mods/AlbumBlades/"
 
-echo "Running Unity (first run imports the whole SDK, so it can take 20+ minutes)..."
+# Leftover Unity processes from earlier runs eat memory, so clear them out
+pkill -f "Editor/Unity -batchmode" 2>/dev/null; pkill -f AssetImportWorker 2>/dev/null; sleep 2
+# Import assets one at a time instead of in parallel worker processes (much less memory)
+sed -i 's/m_RefreshImportMode: 1/m_RefreshImportMode: 0/' "$SDK/ProjectSettings/EditorSettings.asset"
+free -h | sed -n 2p
+
 export ALBUM_BLADES_OUT="$OUT"
 export DISPLAY=:1
-"$UNITY" -batchmode -nographics -projectPath "$SDK" -buildTarget Android \
-  -executeMethod FluidLove.AlbumBladesBuilder.BuildFromCommandLine -logFile "$LOG"
-CODE=$?
+for ATTEMPT in 1 2 3; do
+  echo "Running Unity, attempt $ATTEMPT (it carries on from where the last one stopped)..."
+  "$UNITY" -batchmode -nographics -projectPath "$SDK" -buildTarget Android \
+    -executeMethod FluidLove.AlbumBladesBuilder.BuildFromCommandLine -logFile "$LOG"
+  CODE=$?
+  echo "Unity exited with code $CODE"
+  [ -f "$OUT/AlbumBlades/manifest.json" ] && break
+  grep -q "Scripts have compiler errors" "$LOG" && break
+  if [ $CODE -eq 137 ] || [ $CODE -eq 143 ] || [ $CODE -eq 134 ] || [ $CODE -eq 139 ]; then
+    echo "Unity was killed or crashed (probably memory). Retrying..."
+    pkill -f AssetImportWorker 2>/dev/null; sleep 5
+  else
+    break
+  fi
+done
 echo "$CODE" > "$OUT/exitcode"
 
 if grep -qiE "no valid unity editor licen|licen[cs]e is not active|com.unity.editor.headless" "$LOG"; then
