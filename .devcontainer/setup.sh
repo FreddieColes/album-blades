@@ -11,7 +11,7 @@ sudo apt-get update -y
 sudo apt-get install -y --no-install-recommends \
   curl wget gpg ca-certificates xz-utils zip unzip p7zip-full cpio git git-lfs rsync \
   libgtk-3-0 libnss3 libasound2 libgbm1 libxss1 libxtst6 libsecret-1-0 gnome-keyring dbus-x11 \
-  libglu1-mesa libgl1 libxcursor1 libxrandr2 libxinerama1 libxi6 libcanberra-gtk3-module \
+  xvfb libglu1-mesa libgl1 libxcursor1 libxrandr2 libxinerama1 libxi6 libcanberra-gtk3-module \
   firefox-esr xdg-utils
 
 log "Unity Hub"
@@ -58,16 +58,41 @@ if [ ! -x "$ED/Editor/Unity" ]; then
   [ -x "$ED/Editor/Unity" ] || { echo "Could not find the Unity binary after extracting"; exit 1; }
 fi
 log "Android build support"
-if [ ! -d "$ED/Editor/Data/PlaybackEngines/AndroidPlayer" ]; then
+AP_DIR="$ED/Editor/Data/PlaybackEngines/AndroidPlayer"
+hub(){ # Unity Hub's command line, trying the arg styles different Hub versions accept
+  local disp=(); [ -z "${DISPLAY:-}" ] && disp=(xvfb-run -a)
+  "${disp[@]}" unityhub --no-sandbox -- --headless "$@" || "${disp[@]}" unityhub --no-sandbox --headless "$@"
+}
+if [ ! -d "$AP_DIR" ]; then
+  command -v xvfb-run >/dev/null || sudo apt-get install -y --no-install-recommends xvfb
+  export DISPLAY="${DISPLAY:-}"
+  echo "Pointing Hub at $EDITORS"
+  hub install-path --set "$EDITORS" || true
+  hub editors --installed || true
+  echo "Installing Android module via Unity Hub (about 1 GB, progress may look quiet)"
+  hub install-modules --version "$VER" --module android --childModules || echo "Hub install-modules returned an error"
+fi
+if [ ! -d "$AP_DIR" ]; then
+  echo "Hub route failed, trying direct downloads"
+  mkdir -p /tmp/unitydl/android
   BASE="https://download.unity3d.com/download_unity/$CS"
-  wget -q --show-progress -O /tmp/unitydl/android.tar.xz "$BASE/LinuxEditorTargetInstaller/UnitySetup-Android-Support-for-Editor-$VER.tar.xz"
-  mkdir -p /tmp/unitydl/android && tar -xJf /tmp/unitydl/android.tar.xz -C /tmp/unitydl/android
-  AP=$(find /tmp/unitydl/android -type d -name AndroidPlayer | head -1)
-  mkdir -p "$ED/Editor/Data/PlaybackEngines"
-  mv "$AP" "$ED/Editor/Data/PlaybackEngines/"
+  for f in "LinuxEditorTargetInstaller/UnitySetup-Android-Support-for-Editor-$VER.tar.xz" \
+           "MacEditorTargetInstaller/UnitySetup-Android-Support-for-Editor-$VER.pkg"; do
+    echo "Trying $BASE/$f"
+    if wget --progress=dot:giga -O /tmp/unitydl/android.pkg "$BASE/$f"; then
+      cd /tmp/unitydl/android
+      case "$f" in
+        *.tar.xz) tar -xJf ../android.pkg ;;
+        *.pkg) 7z x -y ../android.pkg >/dev/null; for pl in $(find . -name Payload*); do (zcat "$pl" 2>/dev/null || cat "$pl") | cpio -idm --quiet 2>/dev/null || true; done ;;
+      esac
+      cd - >/dev/null
+      AP=$(find /tmp/unitydl/android -type d -name AndroidPlayer | head -1)
+      if [ -n "$AP" ]; then mkdir -p "$(dirname "$AP_DIR")"; mv "$AP" "$AP_DIR"; break; fi
+    fi
+  done
   rm -rf /tmp/unitydl
 fi
-ls "$ED/Editor/Data/PlaybackEngines"
+if [ -d "$AP_DIR" ]; then echo "Android support installed"; else echo "ANDROID SUPPORT FAILED - send Claude the lines above"; exit 1; fi
 
 log "Telling Unity Hub where the editor is"
 mkdir -p ~/.config/UnityHub
