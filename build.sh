@@ -59,6 +59,8 @@ if [ $CODE -ne 0 ] || [ ! -f "$OUT/AlbumBlades/manifest.json" ]; then
   "$HERE/report.sh"
   exit 1
 fi
-(cd "$OUT" && rm -f AlbumBlades.zip && zip -qr AlbumBlades.zip AlbumBlades)
+sed -i 's/"Name": null/"Name": "Album Blades"/' "$OUT/AlbumBlades/manifest.json"
+# mod.io wants the files at the top of the zip (no wrapping folder)
+(cd "$OUT/AlbumBlades" && rm -f ../AlbumBlades.zip && zip -qr ../AlbumBlades.zip .)
 grep "\[AlbumBlades\]" "$LOG" | tail -15
 echo; echo "SUCCESS: dist/AlbumBlades.zip is ready. Right-click it in the Explorer and choose Download."
