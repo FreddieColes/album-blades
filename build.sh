@@ -59,7 +59,7 @@ if [ $CODE -ne 0 ] || [ ! -f "$OUT/AlbumBlades/manifest.json" ]; then
   "$HERE/report.sh"
   exit 1
 fi
-sed -i 's/"Name": "Album Blades"/"Name": "Album Blades"/' "$OUT/AlbumBlades/manifest.json"
+python3 -c "import json,sys;p=sys.argv[1];m=json.load(open(p));m['Name']='AlbumBlades';json.dump(m,open(p,'w'),indent=2)" "$OUT/AlbumBlades/manifest.json"
 # mod.io wants the files at the top of the zip (no wrapping folder)
 (cd "$OUT/AlbumBlades" && rm -f ../AlbumBlades.zip && zip -qr ../AlbumBlades.zip .)
 grep "\[AlbumBlades\]" "$LOG" | tail -15
