@@ -351,13 +351,13 @@ namespace FluidLove
                 var music = new GameObject("Music");
                 music.transform.SetParent(go.transform, false);
                 music.transform.localPosition = CaseCentre;
-                var src = music.AddComponent<AudioSource>();
-                src.playOnAwake = false;
-                src.volume = 1f;
-                src.spatialBlend = 0.6f;           // partly 2D so it stays loud when held
-                src.rolloffMode = AudioRolloffMode.Linear;
-                src.minDistance = 3f;
-                src.maxDistance = 40f;
+                var musicSource = music.AddComponent<AudioSource>();
+                musicSource.playOnAwake = false;
+                musicSource.volume = 1f;
+                musicSource.spatialBlend = 0.6f;           // partly 2D so it stays loud when held
+                musicSource.rolloffMode = AudioRolloffMode.Linear;
+                musicSource.minDistance = 3f;
+                musicSource.maxDistance = 40f;
                 var player = music.AddComponent<AudioContainerPlayer>();
                 player.audioContainer = container;
                 player.playOnAwake = false;
