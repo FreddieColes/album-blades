@@ -14,6 +14,12 @@ mkdir -p "$OUT"
 
 "$HERE/fix-libssl.sh" || exit 1
 
+echo "Freeing disk space"
+rm -f /workspaces/android-support.pkg; rm -rf /tmp/unitydl; sudo apt-get clean >/dev/null 2>&1
+df -h /workspaces | tail -1
+FREE=$(df -Pk /workspaces | awk 'NR==2{print int($4/1024/1024)}')
+[ "$FREE" -lt 4 ] && echo "WARNING: only ${FREE}GB free, Unity may run out of space"
+
 echo "Copying mod files into the SDK project"
 rsync -a --delete "$HERE/mod/Assets/AlbumBlades/" "$SDK/Assets/AlbumBlades/" --exclude Generated --exclude '*.prefab' --exclude '*.meta'
 mkdir -p "$SDK/BuildStaging/Catalogs/Mods"
@@ -25,6 +31,7 @@ export DISPLAY=:1
 "$UNITY" -batchmode -nographics -projectPath "$SDK" -buildTarget Android \
   -executeMethod FluidLove.AlbumBladesBuilder.BuildFromCommandLine -logFile "$LOG"
 CODE=$?
+echo "$CODE" > "$OUT/exitcode"
 
 if grep -qiE "no valid unity editor licen|licen[cs]e is not active|com.unity.editor.headless" "$LOG"; then
   echo; echo "Unity has no licence yet. Run ./start-hub.sh, sign in on the Desktop tab and add the free Personal licence, then run ./build.sh again."

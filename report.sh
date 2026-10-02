@@ -6,6 +6,9 @@ R="$HERE/reports"; mkdir -p "$R"
 {
   echo "== date"; date
   echo "== SDK source"; (cd "$SDK" && git remote -v | head -1 && git log -1 --format='%H %cd')
+  echo "== Disk and memory"; df -h /workspaces /tmp / 2>/dev/null; free -h
+  echo "== Last build exit code"; cat "$HERE/dist/exitcode" 2>/dev/null
+  echo "== Last terminal lines of build"; tail -5 "$HERE/dist/build.log" | cut -c1-200
   echo "== Unity version"; cat /workspaces/.unity-version
   echo "== PlaybackEngines"; ls /workspaces/unity/*/Editor/Data/PlaybackEngines
   echo "== LFS pointer files (should be none)"; grep -rlI "version https://git-lfs" "$SDK/Assets" "$SDK/Packages" 2>/dev/null | head -20
