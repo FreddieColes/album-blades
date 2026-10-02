@@ -113,7 +113,7 @@ namespace FluidLove
                 s.loadType = AudioClipLoadType.DecompressOnLoad;
                 s.compressionFormat = AudioCompressionFormat.Vorbis;
                 s.quality = 0.7f;
-                s.preloadAudioData = true;
+                imp.preloadAudioData = true;
                 imp.defaultSampleSettings = s;
                 imp.SaveAndReimport();
                 clips.Add(AssetDatabase.LoadAssetAtPath<AudioClip>(p));
