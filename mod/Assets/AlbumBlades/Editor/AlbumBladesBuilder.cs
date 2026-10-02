@@ -24,11 +24,13 @@ namespace FluidLove
         const string PrefabAddress = "FluidLove.PleasureIslandDLC";
         const string IconAddress = "FluidLove.PleasureIslandDLC.Icon";
 
-        // Paddle dimensions (metres). Weapon axis is +Y, grip centred on the origin.
-        const float GripHalf = 0.09f, GripRadius = 0.017f;
-        const float CaseW = 0.40f, CaseH = 0.40f, CaseT = 0.03f, CaseGap = 0.01f;
-        static float CaseBottom => GripHalf + CaseGap;
+        // Jewel case held by its spine. Weapon axis is +Y along the spine; the hand grips the spine
+        // near the bottom corner (origin). The case extends towards -X, spine edge at X = 0.
+        const float GripHalf = 0.08f;
+        const float CaseW = 0.38f, CaseH = 0.38f, CaseT = 0.03f;
+        const float CaseBottom = -0.10f;
         static float CaseCentreY => CaseBottom + CaseH * 0.5f;
+        static Vector3 CaseCentre => new Vector3(-CaseW * 0.5f, CaseCentreY, 0);
 
         [MenuItem("Album Blades/1. Set up assets only")]
         public static void SetupMenu() { Setup(); Debug.Log("[AlbumBlades] Assets set up."); }
@@ -207,7 +209,7 @@ namespace FluidLove
         static Mesh MakeMesh(string path)
         {
             var mb = new MeshBuilder();
-            float x0 = -CaseW / 2, x1 = CaseW / 2, y0 = CaseBottom, y1 = CaseBottom + CaseH, z0 = -CaseT / 2, z1 = CaseT / 2;
+            float x0 = -CaseW, x1 = 0f, y0 = CaseBottom, y1 = CaseBottom + CaseH, z0 = -CaseT / 2, z1 = CaseT / 2;
             Vector2 D0 = new Vector2(0.05f, 0.05f), D1 = new Vector2(0.95f, 0.05f), D2 = new Vector2(0.95f, 0.2f), D3 = new Vector2(0.05f, 0.2f);
 
             // Front (+Z). Viewed from +Z, +X is on the viewer's left, so U runs from x1 to x0.
@@ -223,23 +225,6 @@ namespace FluidLove
             mb.Quad(new Vector3(x0, y0, z1), new Vector3(x0, y0, z0), new Vector3(x0, y1, z0), new Vector3(x0, y1, z1), D0, D1, D2, D3, Vector3.left);
             mb.Quad(new Vector3(x0, y1, z0), new Vector3(x1, y1, z0), new Vector3(x1, y1, z1), new Vector3(x0, y1, z1), D0, D1, D2, D3, Vector3.up);
             mb.Quad(new Vector3(x0, y0, z1), new Vector3(x1, y0, z1), new Vector3(x1, y0, z0), new Vector3(x0, y0, z0), D0, D1, D2, D3, Vector3.down);
-
-            // Grip: 10-sided tube from -GripHalf to case bottom (it runs slightly into the case).
-            int sides = 10;
-            float gy0 = -GripHalf, gy1 = CaseBottom + 0.02f;
-            for (int s = 0; s < sides; s++)
-            {
-                float a0 = s * Mathf.PI * 2 / sides, a1 = (s + 1) * Mathf.PI * 2 / sides;
-                Vector3 p0 = new Vector3(Mathf.Cos(a0) * GripRadius, 0, Mathf.Sin(a0) * GripRadius);
-                Vector3 p1 = new Vector3(Mathf.Cos(a1) * GripRadius, 0, Mathf.Sin(a1) * GripRadius);
-                Vector3 n = ((p0 + p1) * 0.5f).normalized;
-                float u0 = (float)s / sides, u1 = (float)(s + 1) / sides;
-                mb.Quad(p0 + Vector3.up * gy0, p1 + Vector3.up * gy0, p1 + Vector3.up * gy1, p0 + Vector3.up * gy1,
-                    new Vector2(u0, 0.01f), new Vector2(u1, 0.01f), new Vector2(u1, 0.24f), new Vector2(u0, 0.24f), n);
-                // bottom cap (triangle fan as degenerate quad)
-                Vector3 c = Vector3.up * gy0;
-                mb.Quad(c, c, p1 + c, p0 + c, D0, D0, D1, D2, Vector3.down);
-            }
 
             AssetDatabase.DeleteAsset(path);
             var mesh = new Mesh { name = Path.GetFileNameWithoutExtension(path) };
@@ -298,16 +283,17 @@ namespace FluidLove
 
                 var boxGo = new GameObject("CaseBox");
                 boxGo.transform.SetParent(album, false);
-                boxGo.transform.localPosition = new Vector3(0, CaseCentreY, 0);
+                boxGo.transform.localPosition = CaseCentre;
                 var box = boxGo.AddComponent<BoxCollider>();
                 box.size = new Vector3(CaseW, CaseH, CaseT);
                 box.sharedMaterial = wood;
 
-                var capGo = new GameObject("GripCapsule");
+                // Thin strip along the gripped part of the spine
+                var capGo = new GameObject("GripStrip");
                 capGo.transform.SetParent(grip, false);
-                capGo.transform.localPosition = new Vector3(0, (CaseBottom - GripHalf) * 0.5f, 0);
-                var cap = capGo.AddComponent<CapsuleCollider>();
-                cap.direction = 1; cap.radius = GripRadius + 0.003f; cap.height = CaseBottom + GripHalf;
+                capGo.transform.localPosition = new Vector3(-0.01f, 0, 0);
+                var cap = capGo.AddComponent<BoxCollider>();
+                cap.size = new Vector3(0.02f, GripHalf * 2f, CaseT);
                 cap.sharedMaterial = wood;
 
                 ColliderGroup albumGroup = album.GetComponent<ColliderGroup>();
@@ -317,7 +303,7 @@ namespace FluidLove
 
                 // Damagers
                 Transform face = T("BluntHead"); face.name = "AlbumFace";
-                face.localPosition = new Vector3(0, CaseCentreY, 0); face.localRotation = Quaternion.identity;
+                face.localPosition = CaseCentre; face.localRotation = Quaternion.identity;
                 face.GetComponent<Damager>().colliderGroup = albumGroup;
                 Transform gripDmg = go.transform.Cast<Transform>().First(t => t.name == "Blunt" && t.GetComponent<Damager>() != null);
                 gripDmg.name = "GripBlunt";
@@ -328,44 +314,50 @@ namespace FluidLove
                 Transform handleT = T("Handle");
                 handleT.localPosition = Vector3.zero; handleT.localRotation = Quaternion.identity;
                 Handle handle = handleT.GetComponent<Handle>();
-                handle.axisLength = GripHalf * 2f - 0.02f;
+                handle.axisLength = GripHalf * 2f;
                 handle.touchRadius = 0.06f;
                 handle.reach = 0.25f;
 
                 // Misc points
                 Place(T("HolderPoint"), new Vector3(0, 0.02f, 0));
                 Place(T("SpawnPoint"), new Vector3(0, 0.05f, 0));
-                Place(T("ParryPoint"), new Vector3(0, CaseCentreY, 0));
+                Place(T("ParryPoint"), CaseCentre);
                 Transform parry = T("Parry");
-                parry.localPosition = new Vector3(0, CaseCentreY, 0);
+                parry.localPosition = CaseCentre;
                 parry.localRotation = Quaternion.Euler(0, 0, 90);
                 var pt = parry.GetComponent<ParryTarget>(); if (pt) pt.length = CaseW * 0.5f;
                 Transform price = go.transform.Find("PriceTag"); if (price) Place(price, new Vector3(0, 0.0f, -0.025f));
 
                 Transform prev = T("Preview");
-                prev.localPosition = new Vector3(0, CaseCentreY * 0.75f, 0);
+                prev.localPosition = CaseCentre;
                 var preview = prev.GetComponent<Preview>();
-                preview.size = 0.7f;
+                preview.size = 0.6f;
                 preview.renderers = new List<Renderer> { mr };
 
                 // Inertia and centre of mass
                 Transform inertia = go.transform.Find("InertiaTensorCollider");
                 if (inertia)
                 {
-                    inertia.localPosition = new Vector3(0, CaseCentreY * 0.6f, 0); inertia.localRotation = Quaternion.identity;
+                    inertia.localPosition = CaseCentre; inertia.localRotation = Quaternion.identity;
                     var ic = inertia.GetComponent<CapsuleCollider>();
-                    ic.direction = 1; ic.radius = CaseW * 0.35f; ic.height = CaseH + GripHalf * 2f;
+                    ic.direction = 1; ic.radius = CaseW * 0.4f; ic.height = CaseH;
                 }
                 var so = new SerializedObject(item);
                 var com = so.FindProperty("customCenterOfMass");
-                if (com != null) com.vector3Value = new Vector3(0, CaseCentreY * 0.55f, 0);
+                if (com != null) com.vector3Value = new Vector3(-CaseW * 0.3f, CaseCentreY * 0.6f, 0);
                 so.ApplyModifiedPropertiesWithoutUndo();
 
                 // Music: random clip on hit, and on trigger press
                 var music = new GameObject("Music");
                 music.transform.SetParent(go.transform, false);
-                music.transform.localPosition = new Vector3(0, CaseCentreY, 0);
-                music.AddComponent<AudioSource>().playOnAwake = false;
+                music.transform.localPosition = CaseCentre;
+                var src = music.AddComponent<AudioSource>();
+                src.playOnAwake = false;
+                src.volume = 1f;
+                src.spatialBlend = 0.6f;           // partly 2D so it stays loud when held
+                src.rolloffMode = AudioRolloffMode.Linear;
+                src.minDistance = 3f;
+                src.maxDistance = 40f;
                 var player = music.AddComponent<AudioContainerPlayer>();
                 player.audioContainer = container;
                 player.playOnAwake = false;
@@ -443,7 +435,7 @@ namespace FluidLove
             g.exportAfterBuild = false;
             g.modDescription = "Fluid Love albums as weapons. Every hit plays the album.";
             g.modAuthor = "Fluid Love";
-            g.modVersion = "0.1";
+            g.modVersion = "0.5";
             EditorUtility.SetDirty(g);
             AssetDatabase.SaveAssets();
             if (!g.CheckAddressableLabels(out string msg)) Debug.LogWarning("[AlbumBlades] Label check: " + msg);
