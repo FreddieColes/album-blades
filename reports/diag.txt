@@ -1,0 +1,113 @@
+== date
+Fri Oct  2 14:20:14 UTC 2026
+== SDK source
+origin	https://dev.azure.com/Warpfrog/BasSDK/_git/BasSDK (fetch)
+6399bc9ab04a31b29faebef41aa88a611d40273c Fri Sep 25 13:32:31 2026 +0000
+== Unity version
+2021.3.38f1
+== PlaybackEngines
+AndroidPlayer
+LinuxStandaloneSupport
+== LFS pointer files (should be none)
+== AlbumBlades files in SDK
+/workspaces/BasSDK/Assets/AlbumBlades
+/workspaces/BasSDK/Assets/AlbumBlades/Editor
+/workspaces/BasSDK/Assets/AlbumBlades/Editor/AlbumBladesBuilder.cs
+/workspaces/BasSDK/Assets/AlbumBlades/Editor/AlbumBladesBuilder.cs.meta
+/workspaces/BasSDK/Assets/AlbumBlades/Editor.meta
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC.meta
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Art.meta
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Art
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Art/PleasureIslandDLC_Atlas.png
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Art/PleasureIslandDLC_Icon.png.meta
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Art/PleasureIslandDLC_Atlas.png.meta
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Art/PleasureIslandDLC_Icon.png
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio.meta
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_BillyYun_1.wav.meta
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_Hamfisted_2.wav.meta
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_BillyYun_3.wav.meta
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_Hamfisted_1.wav.meta
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_Salsa_3.wav.meta
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_BillyYun_2.wav
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_Salsa_1.wav
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_Salsa_1.wav.meta
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_Salsa_3.wav
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_Hamfisted_3.wav
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_Hamfisted_2.wav
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_Salsa_2.wav
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_Hamfisted_3.wav.meta
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_BillyYun_1.wav
+/workspaces/BasSDK/Assets/AlbumBlades/PleasureIslandDLC/Audio/PID_BillyYun_2.wav.meta
+== Key log lines
+10:[Licensing::Module] Trying to connect to existing licensing client channel...
+21:Entitlement-based licensing initiated
+23:[Licensing::Client] Successfully updated license
+38:-executeMethod
+1751:"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Assertions/InvalidSignatureException.cs"
+1758:"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Assertions/UnexpectedLogMessageException.cs"
+1759:"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Assertions/UnhandledLogMessageException.cs"
+1760:"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Assertions/UnityTestTimeoutException.cs"
+1898:Scripts have compiler errors.
+== 60 lines before 'compiler errors'
+1839-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/AssemblyProvider/PlayerTestAssemblyProvider.cs"
+1840-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/AttributeHelper.cs"
+1841-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/ColorEqualityComparer.cs"
+1842-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/CoroutineRunner.cs"
+1843-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/FloatEqualityComparer.cs"
+1844-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/ICoroutineHost.cs"
+1845-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/IOuterUnityTestAction.cs"
+1846-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/IPostBuildCleanup.cs"
+1847-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/IPrebuildSceneSetup.cs"
+1848-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/ITestRunCallback.cs"
+1849-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/MonoBehaviourTest/IMonoBehaviourTest.cs"
+1850-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/MonoBehaviourTest/MonoBehaviourTest.cs"
+1851-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/PostBuildCleanupAttribute.cs"
+1852-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/PrebuildSceneSetupAttribute.cs"
+1853-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/QuaternionEqualityComparer.cs"
+1854-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/RuntimeTestRunCallbackListener.cs"
+1855-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/StacktraceFilter.cs"
+1856-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/TestRunCallbackAttribute.cs"
+1857-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/TestRunCallbackListener.cs"
+1858-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/Utils.cs"
+1859-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/Vector2ComparerWithEqualsOperator.cs"
+1860-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/Vector2EqualityComparer.cs"
+1861-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/Vector3ComparerWithEqualsOperator.cs"
+1862-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/Vector3EqualityComparer.cs"
+1863-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/Vector4ComparerWithEqualsOperator.cs"
+1864-"Library/PackageCache/com.unity.test-framework@2.0.1-pre.18/UnityEngine.TestRunner/Utils/Vector4EqualityComparer.cs"
+1865--langversion:9.0
+1866-/deterministic
+1867-/optimize+
+1868-/debug:portable
+1869-/nologo
+1870-/RuntimeMetadataVersion:v4.0.30319
+1871-/nowarn:0414
+1872-/nowarn:0067
+1873-/nowarn:0219
+1874-/nowarn:0162
+1875-/nowarn:0108
+1876-/nowarn:0168
+1877-/nowarn:0169
+1878-/nowarn:0649
+1879-/nowarn:1701
+1880-/nowarn:1702
+1881-/utf8output
+1882-/preferreduilang:en-US
+1883--warn:0
+1884-/additionalfile:"Library/Bee/artifacts/1300b0aE.dag/UnityEngine.TestRunner.AdditionalFile.txt"
+1885-##### Custom Environment Variables
+1886-DOTNET_MULTILEVEL_LOOKUP=0
+1887-##### ExitCode
+1888-134
+1889-##### Output
+1890-No usable version of libssl was found
+1891-Aborted (core dumped)
+1892-*** Tundra build failed (5.39 seconds), 686 items updated, 1508 evaluated
+1893-No usable version of libssl was found
+1894-Aborted (core dumped)
+1895-No usable version of libssl was found
+1896-Aborted (core dumped)
+1897-AssetDatabase: script compilation time: 7.828338s
+1898:Scripts have compiler errors.
