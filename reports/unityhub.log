@@ -1,3 +1,9 @@
 [31411] Sandbox: CanCreateUserNamespace() clone() failure: EPERM
 [33099:1002/140622.402758:ERROR:gpu/command_buffer/service/gpu_persistent_cache.cc:137] Persistent cache error: 1
 [30094:1002/140624.036791:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files
+[Parent 31411, IPC I/O Parent] WARNING: process 35211 exited on signal 15: file ipc/chromium/src/chrome/common/process_watcher_posix_sigchld.cc:161
+[Parent 31411, IPC I/O Parent] WARNING: process 35146 exited on signal 15: file ipc/chromium/src/chrome/common/process_watcher_posix_sigchld.cc:161
+[Parent 31411, IPC I/O Parent] WARNING: process 35216 exited on signal 15: file ipc/chromium/src/chrome/common/process_watcher_posix_sigchld.cc:161
+[Parent 31411, IPC I/O Parent] WARNING: process 31669 exited on signal 15: file ipc/chromium/src/chrome/common/process_watcher_posix_sigchld.cc:161
+[Parent 31411, IPC I/O Parent] WARNING: process 31647 exited on signal 15: file ipc/chromium/src/chrome/common/process_watcher_posix_sigchld.cc:161
+[Parent 31411, IPC I/O Parent] WARNING: process 31575 exited on signal 15: file ipc/chromium/src/chrome/common/process_watcher_posix_sigchld.cc:161

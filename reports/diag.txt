@@ -1,5 +1,5 @@
 == date
-Fri Oct  2 14:23:08 UTC 2026
+Fri Oct  2 14:26:12 UTC 2026
 == SDK source
 origin	https://dev.azure.com/Warpfrog/BasSDK/_git/BasSDK (fetch)
 6399bc9ab04a31b29faebef41aa88a611d40273c Fri Sep 25 13:32:31 2026 +0000
@@ -45,67 +45,4 @@ LinuxStandaloneSupport
 21:Entitlement-based licensing initiated
 23:[Licensing::Client] Successfully updated license
 38:-executeMethod
-2444:Assets/AlbumBlades/Editor/AlbumBladesBuilder.cs(116,19): error CS1061: 'AudioImporterSampleSettings' does not contain a definition for 'preloadAudioData' and no accessible extension method 'preloadAudioData' accepting a first argument of type 'AudioImporterSampleSettings' could be found (are you missing a using directive or an assembly reference?)
-2460:Assets/AlbumBlades/Editor/AlbumBladesBuilder.cs(116,19): error CS1061: 'AudioImporterSampleSettings' does not contain a definition for 'preloadAudioData' and no accessible extension method 'preloadAudioData' accepting a first argument of type 'AudioImporterSampleSettings' could be found (are you missing a using directive or an assembly reference?)
-2462:Scripts have compiler errors.
 == 60 lines before 'compiler errors'
-2403--r:"Library/Bee/artifacts/1300b0aE.dag/Unity.XR.Management.Editor.ref.dll"
-2404--r:"Library/Bee/artifacts/1300b0aE.dag/Unity.XR.Management.ref.dll"
-2405--r:"Library/Bee/artifacts/1300b0aE.dag/Unity.XR.MockHMD.Editor.ref.dll"
-2406--r:"Library/Bee/artifacts/1300b0aE.dag/Unity.XR.MockHMD.ref.dll"
-2407--r:"Library/Bee/artifacts/1300b0aE.dag/UnityEditor.SpatialTracking.ref.dll"
-2408--r:"Library/Bee/artifacts/1300b0aE.dag/UnityEditor.TestRunner.ref.dll"
-2409--r:"Library/Bee/artifacts/1300b0aE.dag/UnityEditor.UI.ref.dll"
-2410--r:"Library/Bee/artifacts/1300b0aE.dag/UnityEditor.XR.LegacyInputHelpers.ref.dll"
-2411--r:"Library/Bee/artifacts/1300b0aE.dag/UnityEngine.SpatialTracking.ref.dll"
-2412--r:"Library/Bee/artifacts/1300b0aE.dag/UnityEngine.TestRunner.ref.dll"
-2413--r:"Library/Bee/artifacts/1300b0aE.dag/UnityEngine.UI.ref.dll"
-2414--r:"Library/Bee/artifacts/1300b0aE.dag/UnityEngine.XR.LegacyInputHelpers.ref.dll"
-2415--r:"Library/Bee/artifacts/1300b0aE.dag/com.unity.cinemachine.editor.ref.dll"
-2416--r:"Library/Bee/artifacts/1300b0aE.dag/robproductions.opengraphgui.editor.ref.dll"
-2417--analyzer:"Library/PackageCache/com.unity.project-auditor@1.0.2/RoslynAnalyzers/Domain_Reload_Analyzer.dll"
-2418-"Assets/AlbumBlades/Editor/AlbumBladesBuilder.cs"
-2419-"Assets/SDK/Shaders/Editor/ThunderRoadLitShader.cs"
-2420--langversion:9.0
-2421-/deterministic
-2422-/optimize+
-2423-/debug:portable
-2424-/nologo
-2425-/RuntimeMetadataVersion:v4.0.30319
-2426-/nowarn:0414
-2427-/nowarn:0067
-2428-/nowarn:0219
-2429-/nowarn:0162
-2430-/nowarn:0108
-2431-/nowarn:0168
-2432-/nowarn:0169
-2433-/nowarn:0649
-2434-/nowarn:1701
-2435-/nowarn:1702
-2436-/utf8output
-2437-/preferreduilang:en-US
-2438-/additionalfile:"Library/Bee/artifacts/1300b0aE.dag/Assembly-CSharp-Editor.AdditionalFile.txt"
-2439-##### Custom Environment Variables
-2440-DOTNET_MULTILEVEL_LOOKUP=0
-2441-##### ExitCode
-2442-1
-2443-##### Output
-2444-Assets/AlbumBlades/Editor/AlbumBladesBuilder.cs(116,19): error CS1061: 'AudioImporterSampleSettings' does not contain a definition for 'preloadAudioData' and no accessible extension method 'preloadAudioData' accepting a first argument of type 'AudioImporterSampleSettings' could be found (are you missing a using directive or an assembly reference?)
-2445-*** Tundra build failed (69.56 seconds - 0:01:09), 820 items updated, 1508 evaluated
-2446-Assets/SDK/Scripts/Misc/Wearable.cs(35,22): warning CS0659: 'Wearable.WearableEntry' overrides Object.Equals(object o) but does not override Object.GetHashCode()
-2447-Assets/SDK/Scripts/Catalog/Spell/Modules/SpellModuleMusket/SpellModuleMusket.cs(11,36): warning CS0618: 'SpellCastCharge.musketHammerEffectId' is obsolete: 'Musket fields in SpellCastCharge and similar are obsolete. Reference fields inside SpellModuleMusket instead.'
-2448-Assets/SDK/Scripts/Catalog/Spell/Modules/SpellModuleMusket/SpellModuleMusket.cs(12,35): warning CS0618: 'SpellCastCharge.musketShootEffectId' is obsolete: 'Musket fields in SpellCastCharge and similar are obsolete. Reference fields inside SpellModuleMusket instead.'
-2449-Assets/SDK/Scripts/Catalog/Spell/Modules/SpellModuleMusket/SpellModuleMusket.cs(13,36): warning CS0618: 'SpellCastCharge.musketChargeEffectId' is obsolete: 'Musket fields in SpellCastCharge and similar are obsolete. Reference fields inside SpellModuleMusket instead.'
-2450-Assets/SDK/Scripts/Catalog/Spell/Modules/SpellModuleMusket/SpellModuleMusket.cs(15,13): warning CS0618: 'SpellCastCharge.musketHammerEffectId' is obsolete: 'Musket fields in SpellCastCharge and similar are obsolete. Reference fields inside SpellModuleMusket instead.'
-2451-Assets/SDK/Scripts/Catalog/Spell/Modules/SpellModuleMusket/SpellModuleMusket.cs(16,13): warning CS0618: 'SpellCastCharge.musketShootEffectId' is obsolete: 'Musket fields in SpellCastCharge and similar are obsolete. Reference fields inside SpellModuleMusket instead.'
-2452-Assets/SDK/Scripts/Catalog/Spell/Modules/SpellModuleMusket/SpellModuleMusket.cs(17,13): warning CS0618: 'SpellCastCharge.musketChargeEffectId' is obsolete: 'Musket fields in SpellCastCharge and similar are obsolete. Reference fields inside SpellModuleMusket instead.'
-2453-Assets/SDK/Scripts/Catalog/Spell/SpellCastCharge.cs(442,51): warning CS0618: 'SpellCastCharge.musketHammerEffectId' is obsolete: 'Musket fields in SpellCastCharge and similar are obsolete. Reference fields inside SpellModuleMusket instead.'
-2454-Assets/SDK/Scripts/Catalog/Spell/SpellCastCharge.cs(443,17): warning CS0618: 'SpellCastCharge.musketShootEffectId' is obsolete: 'Musket fields in SpellCastCharge and similar are obsolete. Reference fields inside SpellModuleMusket instead.'
-2455-Assets/SDK/Scripts/Catalog/Spell/SpellCastCharge.cs(444,17): warning CS0618: 'SpellCastCharge.musketChargeEffectId' is obsolete: 'Musket fields in SpellCastCharge and similar are obsolete. Reference fields inside SpellModuleMusket instead.'
-2456-Assets/SDK/Scripts/Catalog/Loot/LootTable.cs(284,34): warning CS8524: The switch expression does not handle some values of its input type (it is not exhaustive) involving an unnamed enum value. For example, the pattern '(ThunderRoad.LootTable.Drop.Reference)4' is not covered.
-2457-Assets/SDK/Scripts/Catalog/Level/Modules/LevelModuleSurvival.cs(144,25): warning CS8509: The switch expression does not handle all possible values of its input type (it is not exhaustive). For example, the pattern 'ThunderRoad.LevelModuleSurvival.RewardTypes.None' is not covered.
-2458-Assets/SDK/Scripts/Misc/Utils.cs(71,77): warning CS8524: The switch expression does not handle some values of its input type (it is not exhaustive) involving an unnamed enum value. For example, the pattern '(ThunderRoad.Axis)3' is not covered.
-2459-Assets/SDK/Scripts/Misc/Utils.cs(78,90): warning CS8524: The switch expression does not handle some values of its input type (it is not exhaustive) involving an unnamed enum value. For example, the pattern '(ThunderRoad.Axis)3' is not covered.
-2460-Assets/AlbumBlades/Editor/AlbumBladesBuilder.cs(116,19): error CS1061: 'AudioImporterSampleSettings' does not contain a definition for 'preloadAudioData' and no accessible extension method 'preloadAudioData' accepting a first argument of type 'AudioImporterSampleSettings' could be found (are you missing a using directive or an assembly reference?)
-2461-AssetDatabase: script compilation time: 70.370958s
-2462:Scripts have compiler errors.
