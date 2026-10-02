@@ -29,9 +29,8 @@ if grep -qiE "no valid unity editor licen|licen[cs]e is not active|com.unity.edi
   exit 2
 fi
 if [ $CODE -ne 0 ] || [ ! -f "$OUT/AlbumBlades/manifest.json" ]; then
-  echo; echo "BUILD FAILED (exit $CODE). Key lines:"
-  grep -E "\[AlbumBlades\]|error CS|Exception|Error" "$LOG" | tail -40
-  echo; echo "Full log: dist/build.log  (send me the lines above)"
+  echo; echo "BUILD FAILED (exit $CODE). Sending the logs to the repo for Claude..."
+  "$HERE/report.sh"
   exit 1
 fi
 (cd "$OUT" && rm -f AlbumBlades.zip && zip -qr AlbumBlades.zip AlbumBlades)
