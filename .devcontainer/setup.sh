@@ -14,6 +14,9 @@ sudo apt-get install -y --no-install-recommends \
   xvfb libglu1-mesa libgl1 libxcursor1 libxrandr2 libxinerama1 libxi6 libcanberra-gtk3-module \
   firefox-esr xdg-utils
 
+log "libssl1.1 for Unity's compiler"
+bash "$(dirname "$0")/../fix-libssl.sh" || true
+
 log "Unity Hub"
 if ! command -v unityhub >/dev/null; then
   wget -qO - https://hub.unity3d.com/linux/keys/public | gpg --dearmor | sudo tee /usr/share/keyrings/Unity_Technologies_ApS.gpg >/dev/null

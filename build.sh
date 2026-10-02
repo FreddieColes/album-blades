@@ -12,6 +12,8 @@ mkdir -p "$OUT"
 
 [ -x "$UNITY" ] || { echo "Unity not found at $UNITY. Did setup finish? Check /workspaces/setup.log"; exit 1; }
 
+"$HERE/fix-libssl.sh" || exit 1
+
 echo "Copying mod files into the SDK project"
 rsync -a --delete "$HERE/mod/Assets/AlbumBlades/" "$SDK/Assets/AlbumBlades/" --exclude Generated --exclude '*.prefab' --exclude '*.meta'
 mkdir -p "$SDK/BuildStaging/Catalogs/Mods"
