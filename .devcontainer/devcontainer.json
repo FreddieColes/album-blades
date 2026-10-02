@@ -1,0 +1,18 @@
+{
+  "name": "Album Blades (Unity + B&S SDK)",
+  "image": "mcr.microsoft.com/devcontainers/base:bookworm",
+  "hostRequirements": { "cpus": 4, "memory": "16gb", "storage": "32gb" },
+  "features": {
+    "ghcr.io/devcontainers/features/desktop-lite:1": {
+      "password": "vscode",
+      "webPort": "6080",
+      "vncPort": "5901"
+    }
+  },
+  "forwardPorts": [6080],
+  "portsAttributes": {
+    "6080": { "label": "Desktop (noVNC)", "onAutoForward": "notify" }
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh 2>&1 | tee /workspaces/setup.log",
+  "remoteUser": "vscode"
+}
