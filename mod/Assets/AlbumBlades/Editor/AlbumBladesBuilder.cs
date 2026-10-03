@@ -19,10 +19,12 @@ namespace FluidLove
     {
         const string Root = "Assets/AlbumBlades";
         const string ModFolder = "AlbumBlades";
-        const string Album = "PleasureIslandDLC";
-        const string ItemId = "FluidLove_PleasureIslandDLC";
-        const string PrefabAddress = "FluidLove.PleasureIslandDLC";
-        const string IconAddress = "FluidLove.PleasureIslandDLC.Icon";
+        // One weapon per album folder under Assets/AlbumBlades/<Album>/ (Art + Audio)
+        static readonly string[] Albums = { "PleasureIslandDLC", "BackwaterCrimes" };
+        static string Album;
+        static string ItemId => "FluidLove_" + Album;
+        static string PrefabAddress => "FluidLove." + Album;
+        static string IconAddress => PrefabAddress + ".Icon";
 
         // Jewel case held by its spine. Weapon axis is +Y along the spine; the hand grips the spine
         // near the bottom corner (origin). The case extends towards -X, spine edge at X = 0.
@@ -92,6 +94,18 @@ namespace FluidLove
 
         static AssetBundleGroup Setup()
         {
+            var entries = new List<(string path, string address)>();
+            foreach (string a in Albums)
+            {
+                Album = a;
+                Debug.Log("[AlbumBlades] Setting up " + a);
+                SetupAlbum(entries);
+            }
+            return MakeBundleGroup(MakeAddressables(entries));
+        }
+
+        static void SetupAlbum(List<(string path, string address)> entries)
+        {
             string dir = $"{Root}/{Album}";
             string gen = $"{dir}/Generated";
             Directory.CreateDirectory(gen);
@@ -135,8 +149,8 @@ namespace FluidLove
             string prefabPath = $"{dir}/{ItemId}.prefab";
             MakePrefab(prefabPath, mesh, mat, container);
 
-            AddressableAssetGroup aa = MakeAddressables(prefabPath, iconPath);
-            return MakeBundleGroup(aa);
+            entries.Add((prefabPath, PrefabAddress));
+            entries.Add((iconPath, IconAddress));
         }
 
         static void ImportTexture(string path, int maxSize, bool isIcon)
@@ -400,7 +414,7 @@ namespace FluidLove
 
         // ------------------------------------------------------------------ addressables + bundle group
 
-        static AddressableAssetGroup MakeAddressables(string prefabPath, string iconPath)
+        static AddressableAssetGroup MakeAddressables(List<(string path, string address)> entries)
         {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
             var grp = settings.FindGroup(ModFolder) ?? settings.CreateGroup(ModFolder, false, false, true, null,
@@ -416,8 +430,7 @@ namespace FluidLove
                 e.SetLabel("Android", true, true, false);
                 e.SetLabel("Windows", true, true, false);
             }
-            Entry(prefabPath, PrefabAddress);
-            Entry(iconPath, IconAddress);
+            foreach (var (path, address) in entries) Entry(path, address);
             settings.SetDirty(AddressableAssetSettings.ModificationEvent.BatchModification, null, true, true);
             AssetDatabase.SaveAssets();
             return grp;
@@ -435,7 +448,7 @@ namespace FluidLove
             g.exportAfterBuild = false;
             g.modDescription = "Fluid Love albums as weapons. Every hit plays the album.";
             g.modAuthor = "Fluid Love";
-            g.modVersion = "0.5";
+            g.modVersion = "0.6";
             EditorUtility.SetDirty(g);
             AssetDatabase.SaveAssets();
             if (!g.CheckAddressableLabels(out string msg)) Debug.LogWarning("[AlbumBlades] Label check: " + msg);
