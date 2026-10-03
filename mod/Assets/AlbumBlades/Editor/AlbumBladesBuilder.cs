@@ -20,7 +20,7 @@ namespace FluidLove
         const string Root = "Assets/AlbumBlades";
         const string ModFolder = "AlbumBlades";
         // One weapon per album folder under Assets/AlbumBlades/<Album>/ (Art + Audio)
-        static readonly string[] Albums = { "PleasureIslandDLC", "BackwaterCrimes", "ManOfTheCloth" };
+        static readonly string[] Albums = { "PleasureIslandDLC", "BackwaterCrimes", "ManOfTheCloth", "ReadyForBusiness" };
         static string Album;
         static string ItemId => "FluidLove_" + Album;
         static string PrefabAddress => "FluidLove." + Album;
@@ -448,7 +448,7 @@ namespace FluidLove
             g.exportAfterBuild = false;
             g.modDescription = "Fluid Love albums as weapons. Every hit plays the album.";
             g.modAuthor = "Fluid Love";
-            g.modVersion = "0.7";
+            g.modVersion = "1.0";
             EditorUtility.SetDirty(g);
             AssetDatabase.SaveAssets();
             if (!g.CheckAddressableLabels(out string msg)) Debug.LogWarning("[AlbumBlades] Label check: " + msg);
