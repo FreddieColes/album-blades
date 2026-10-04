@@ -53,11 +53,6 @@ for ATTEMPT in 1 2 3; do
 done
 echo "$CODE" > "$OUT/exitcode-olmac"
 
-if grep -qiE "no valid unity editor licen|licen[cs]e is not active|com.unity.editor.headless" "$LOG"; then
-  echo; echo "Unity has no licence yet. Run ./start-hub.sh, sign in on the Desktop tab and add the free Personal licence, then run ./build-olmac.sh again."
-  exit 2
-fi
-
 send_report() {
   R="$HERE/reports"; mkdir -p "$R"
   {
@@ -71,6 +66,14 @@ send_report() {
   gzip -c "$LOG" > "$R/build-olmac.log.gz" 2>/dev/null
   cd "$HERE" && git add -f reports && git commit -qm "Ol' Mac build report $(date +%H:%M)" && git pull -q --rebase && git push -q && echo "Report sent. Tell Claude: report pushed."
 }
+
+if [ ! -f "$OUT/OlMac/manifest.json" ] && grep -qiE "no valid unity editor licen|licen[cs]e is not active" "$LOG"; then
+  echo; echo "Unity says it has no licence:"
+  grep -iE "licen" "$LOG" | head -15 | cut -c1-200
+  echo; echo "Sending the log to Claude anyway..."
+  send_report
+  exit 2
+fi
 
 if [ $CODE -ne 0 ] || [ ! -f "$OUT/OlMac/manifest.json" ]; then
   echo; echo "BUILD FAILED (exit $CODE). Sending the logs to the repo for Claude..."
