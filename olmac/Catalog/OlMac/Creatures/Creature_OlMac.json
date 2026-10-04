@@ -55,7 +55,9 @@
       "bodyMaterialAddressLod1": "OlMac.Invisible",
       "handsMaterialAddressLod0": "OlMac.Invisible",
       "handsMaterialAddressLod1": "OlMac.Invisible",
-      "allowedHeadsIDs": [],
+      "allowedHeadsIDs": [
+        "OlMac_NoHead"
+      ],
       "hairColorsPrimary": [],
       "hairColorsSecondary": [],
       "hairColorsSpecular": [],

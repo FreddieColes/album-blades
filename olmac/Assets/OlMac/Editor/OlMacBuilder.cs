@@ -30,6 +30,11 @@ namespace FluidLove
         const string InvisibleAddress = "OlMac.Invisible";
         const string IconAddress = "OlMac.Icon";
 
+        // Paper Mac placement (tweak these if he's too big/small/high/low or behind the body)
+        const float PaperSize = 2.4f;       // metres, the square he's drawn in
+        const float PaperLift = 0.085f;     // fraction of size; raises his feet onto the floor
+        const float PaperForward = 0.07f;   // fraction of size; ~17cm towards the viewer
+
         // Atlas
         const int Columns = 6, Rows = 2, CellSize = 512;
         const int WhiteThreshold = 246; // background is pure white; his shirt (~243) survives
@@ -129,12 +134,36 @@ namespace FluidLove
             AssetDatabase.CreateAsset(paperMat, paperMatPath);
             Debug.Log($"[OlMac] Paper material shader: {paperMat.shader.name} | AlphaClip:{paperMat.HasProperty("_AlphaClip")} Cutoff:{paperMat.HasProperty("_Cutoff")} Emission:{paperMat.HasProperty("_EmissionMap")}");
 
-            // Body material: exactly as v0.1, because the body DID come out invisible with it.
-            // (Only used by the creature's body/hands. The banjo's renderer is simply switched off.)
-            Shader invisShader = Shader.Find("OlMac/Invisible") ?? throw new Exception("Shader OlMac/Invisible not found");
+            // Body material: the game's own item shader with a fully see-through texture and
+            // cutout on, so every pixel is thrown away. (v0.1's custom invisible shader flashed black.)
+            string clearPath = $"{Gen}/OlMac_Clear.png";
+            var clear = new Texture2D(4, 4, TextureFormat.RGBA32, false);
+            clear.SetPixels32(new Color32[16]);
+            clear.Apply();
+            File.WriteAllBytes(clearPath, clear.EncodeToPNG());
+            AssetDatabase.ImportAsset(clearPath);
+            var cti = (TextureImporter)AssetImporter.GetAtPath(clearPath);
+            cti.alphaSource = TextureImporterAlphaSource.FromInput;
+            cti.alphaIsTransparency = true;
+            cti.mipmapEnabled = false;
+            cti.textureCompression = TextureImporterCompression.Uncompressed;
+            cti.SaveAndReimport();
+            Texture2D clearTex = AssetDatabase.LoadAssetAtPath<Texture2D>(clearPath);
+
             string invisMatPath = $"{Gen}/OlMac_Invisible.mat";
             AssetDatabase.DeleteAsset(invisMatPath);
-            var invisMat = new Material(invisShader) { name = "OlMac_Invisible" };
+            var invisMat = template ? new Material(template) : new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            invisMat.name = "OlMac_Invisible";
+            foreach (string p in new[] { "_BaseMap", "_MainTex", "_BaseColorMap" })
+                if (invisMat.HasProperty(p)) invisMat.SetTexture(p, clearTex);
+            foreach (string p in new[] { "_BaseColor", "_Color" })
+                if (invisMat.HasProperty(p)) invisMat.SetColor(p, new Color(1, 1, 1, 0));
+            if (invisMat.HasProperty("_BumpMap")) invisMat.SetTexture("_BumpMap", null);
+            if (invisMat.HasProperty("_AlphaClip")) invisMat.SetFloat("_AlphaClip", 1f);
+            if (invisMat.HasProperty("_Cutoff")) invisMat.SetFloat("_Cutoff", 0.99f);
+            invisMat.EnableKeyword("_ALPHATEST_ON");
+            invisMat.DisableKeyword("_EMISSION");
+            invisMat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.AlphaTest;
             AssetDatabase.CreateAsset(invisMat, invisMatPath);
 
             // Audio: Old Mac Daddy clips for the banjo
@@ -400,7 +429,7 @@ namespace FluidLove
                 main.duration = life;
                 main.startLifetime = life;
                 main.startSpeed = 0f;
-                main.startSize = 2.0f;           // Mac is about 1.8m inside a 2m square
+                main.startSize = PaperSize;      // Mac is ~2.1m tall inside the square, so his comb covers the human head
                 main.startRotation = 0f;
                 main.startColor = Color.white;
                 main.gravityModifier = 0f;
@@ -439,9 +468,11 @@ namespace FluidLove
                 r.alignment = ParticleSystemRenderSpace.View;
                 r.minParticleSize = 0f;
                 r.maxParticleSize = 10f;          // default 0.5 would shrink him when he's right in your face
-                // Pull the drawing ~0.4m towards whoever's looking, so it always sits in front of
-                // the leftover head and shorts and hides them, from every angle.
-                r.pivot = new Vector3(0f, 0f, -0.2f);
+                // y: lift so his feet sit on the floor (holster is at ~1m hip height).
+                // z: pull the drawing ~17cm towards whoever's looking, so it sits just in front of the
+                //    hidden body (covers the shorts) but close enough that hits land where you see him.
+                //    v0.2 used -0.2 and he ended up BEHIND the body, so positive = towards you.
+                r.pivot = new Vector3(0f, PaperLift, PaperForward);
                 return r;
             }
 
@@ -450,7 +481,7 @@ namespace FluidLove
 
             var lod = paper.AddComponent<LODGroup>();
             lod.localReferencePoint = Vector3.zero;
-            lod.size = 2f;
+            lod.size = PaperSize;
             lod.fadeMode = LODFadeMode.None;
             // Fills ~45% of your view height = roughly 2m away
             lod.SetLODs(new[]
@@ -646,7 +677,7 @@ namespace FluidLove
             g.exportAfterBuild = false;
             g.modDescription = "Ol' Mac, the paper chicken man. Banjo in hand, Old Mac Daddy on every hit.";
             g.modAuthor = "Fluid Love";
-            g.modVersion = "0.2";
+            g.modVersion = "0.3";
             EditorUtility.SetDirty(g);
             AssetDatabase.SaveAssets();
             if (!g.CheckAddressableLabels(out string msg)) Debug.LogWarning("[OlMac] Label check: " + msg);
