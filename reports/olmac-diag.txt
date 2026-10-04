@@ -1,5 +1,5 @@
 == date
-Sun Oct  4 18:44:51 UTC 2026
+Sun Oct  4 19:15:04 UTC 2026
 == exit code
 0
 == Key log lines
@@ -14,24 +14,23 @@ Sun Oct  4 18:44:51 UTC 2026
 544:[OlMac] Target Android
 684:[OlMac] Atlas 3072x1024, scale 0.183
 696:[OlMac] Template material OrangeItem uses shader ThunderRoad/LitMoss - ASshader
-720:[OlMac] Paper material shader: ThunderRoad/LitMoss - ASshader | AlphaClip:True Cutoff:True Emission:False
-867:[OlMac] 3 banjo clips
-1578:[OlMac] Prefab saved: Assets/OlMac/OlMac_Paper.prefab
-2258:[OlMac] Prefab saved: Assets/OlMac/OlMac_Banjo.prefab
-2289:[OlMac] Building asset bundles...
-3147:Shader error in 'OlMac/Invisible': syntax error: unexpected token ',' at line 33 (on vulkan)
-3152:Shader error in 'OlMac/Invisible': undeclared identifier 'UNITY_INITIALIZE_OUTPUT' at line 33 (on vulkan)
-3291:[OlMac] DONE. Exported 12 files to /workspaces/album-blades/dist/OlMac
-3302:[OlMac]   /catalog_OlMac.hash
-3313:[OlMac]   /catalog_OlMac.json
-3324:[OlMac]   /manifest.json
-3335:[OlMac]   /olmac_assets_all.bundle
-3346:[OlMac]   /Containers/Container_OlMac.json
-3357:[OlMac]   /CreatureTables/CreatureTable_OlMac.json
-3368:[OlMac]   /CreatureTables/CreatureTable_OlMacHead.json
-3379:[OlMac]   /Creatures/Creature_OlMac.json
-3390:[OlMac]   /Items/Item_Weapon_OlMac_Banjo.json
-3401:[OlMac]   /Items/Item_Weapon_OlMac_Paper.json
-3412:[OlMac]   /Waves/Wave_OlMac.json
-3423:[OlMac]   /Waves/Wave_OlMacHead.json
+719:[OlMac] Paper material shader: ThunderRoad/LitMoss - ASshader | AlphaClip:True Cutoff:True Emission:False
+879:[OlMac] 3 banjo clips
+1585:[OlMac] Prefab saved: Assets/OlMac/OlMac_Paper.prefab
+2265:[OlMac] Prefab saved: Assets/OlMac/OlMac_Banjo.prefab
+2296:[OlMac] Building asset bundles...
+3277:[OlMac] DONE. Exported 13 files to /workspaces/album-blades/dist/OlMac
+3288:[OlMac]   /catalog_OlMac.hash
+3299:[OlMac]   /catalog_OlMac.json
+3310:[OlMac]   /manifest.json
+3321:[OlMac]   /olmac_assets_all.bundle
+3332:[OlMac]   /Containers/Container_OlMac.json
+3343:[OlMac]   /CreatureTables/CreatureTable_OlMac.json
+3354:[OlMac]   /CreatureTables/CreatureTable_OlMacHead.json
+3365:[OlMac]   /Creatures/Creature_OlMac.json
+3376:[OlMac]   /Items/Item_Wardrobe_OlMac_NoHead.json
+3387:[OlMac]   /Items/Item_Weapon_OlMac_Banjo.json
+3398:[OlMac]   /Items/Item_Weapon_OlMac_Paper.json
+3409:[OlMac]   /Waves/Wave_OlMac.json
+3420:[OlMac]   /Waves/Wave_OlMacHead.json
 == 60 lines before 'compiler errors'
