@@ -1,0 +1,34 @@
+{
+  "$type": "ThunderRoad.ContainerData, ThunderRoad",
+  "id": "OlMac",
+  "sensitiveContent": "None",
+  "sensitiveFilterBehaviour": "Discard",
+  "version": 1,
+  "groupPath": "OlMac",
+  "displayName": "",
+  "description": null,
+  "containerContents": [
+    {
+      "$type": "ThunderRoad.ItemContent, ThunderRoad",
+      "quantity": 1,
+      "state": {
+        "$type": "ThunderRoad.ContentStateHolder, ThunderRoad",
+        "holderName": "HipsRight"
+      },
+      "customDataList": [],
+      "mergeKey": "0a1c0001",
+      "referenceID": "OlMac_Paper"
+    },
+    {
+      "$type": "ThunderRoad.ItemContent, ThunderRoad",
+      "quantity": 1,
+      "state": {
+        "$type": "ThunderRoad.ContentStateHolder, ThunderRoad",
+        "holderName": "BackRight"
+      },
+      "customDataList": [],
+      "mergeKey": "0a1c0002",
+      "referenceID": "OlMac_Banjo"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "$type": "ThunderRoad.WaveData, ThunderRoad",
+  "id": "OlMacHead",
+  "sensitiveContent": "None",
+  "sensitiveFilterBehaviour": "Discard",
+  "version": 2,
+  "groupPath": "Sandbox",
+  "category": "9Ol' Mac",
+  "localizationId": null,
+  "title": "2Ol' Mac (test: with head)",
+  "description": "Test version. Uses the standard head in case the headless one fails to spawn.",
+  "loopBehavior": "NoLoop",
+  "totalMaxAlive": 3,
+  "alwaysAvailable": true,
+  "waveSelectors": [
+    "Arena",
+    "Ruins",
+    "Market",
+    "Canyon",
+    "Citadel"
+  ],
+  "factions": [
+    {
+      "$type": "ThunderRoad.WaveData+WaveFaction, ThunderRoad",
+      "factionID": 5,
+      "factionMaxAlive": 3
+    }
+  ],
+  "groups": [
+    {
+      "$type": "ThunderRoad.WaveData+Group, ThunderRoad",
+      "mergeKey": "0a1c2002",
+      "reference": "Table",
+      "referenceID": "OlMacHead",
+      "overrideFaction": false,
+      "factionID": 0,
+      "overrideContainer": false,
+      "overrideContainerID": "",
+      "overrideBrain": false,
+      "overrideBrainID": "",
+      "overrideMaxMelee": false,
+      "overrideMaxMeleeCount": 2,
+      "groupHealthMultiplier": 1.0,
+      "minMaxCount": { "x": 1, "y": 1 },
+      "spawnPointIndex": -1,
+      "prereqGroupIndex": -1,
+      "prereqMaxRemainingAlive": 0
+    }
+  ],
+  "modules": []
+}

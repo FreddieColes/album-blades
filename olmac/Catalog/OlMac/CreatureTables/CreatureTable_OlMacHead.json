@@ -1,0 +1,27 @@
+{
+  "$type": "ThunderRoad.CreatureTable, ThunderRoad",
+  "id": "OlMacHead",
+  "sensitiveContent": "None",
+  "sensitiveFilterBehaviour": "Discard",
+  "version": 1,
+  "groupPath": "OlMac",
+  "description": "Ol' Mac, test version with the standard head",
+  "linkedToGenderRatio": false,
+  "drops": [
+    {
+      "$type": "ThunderRoad.CreatureTable+Drop, ThunderRoad",
+      "mergeKey": "0a1c1002",
+      "reference": "Creature",
+      "referenceID": "OlMac",
+      "overrideFaction": true,
+      "factionID": 5,
+      "overrideContainer": true,
+      "overrideContainerID": "OlMac",
+      "overrideBrain": true,
+      "overrideBrainID": "HumanMedium",
+      "overrideEthnicity": true,
+      "overrideEthnicityID": "OlMacHead",
+      "probabilityWeight": 1.0
+    }
+  ]
+}
