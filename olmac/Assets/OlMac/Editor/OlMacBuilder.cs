@@ -100,16 +100,38 @@ namespace FluidLove
             // Atlas + icon from the 11 drawings
             string atlasPath = BuildAtlas(out string iconPath);
 
-            // Materials
-            Shader paperShader = Shader.Find("OlMac/PaperMac") ?? throw new Exception("Shader OlMac/PaperMac not found (did it compile?)");
-            Shader invisShader = Shader.Find("OlMac/Invisible") ?? throw new Exception("Shader OlMac/Invisible not found (did it compile?)");
+            // Materials. v0.1 used custom shaders and Nomad drew them pink, so everything now
+            // uses the game's own item shader (copied from the same material the album weapons use).
+            Material template = FindTemplateMaterial();
+            Texture2D atlasTex = AssetDatabase.LoadAssetAtPath<Texture2D>(atlasPath);
 
             string paperMatPath = $"{Gen}/OlMac_Paper.mat";
             AssetDatabase.DeleteAsset(paperMatPath);
-            var paperMat = new Material(paperShader) { name = "OlMac_Paper" };
-            paperMat.SetTexture("_MainTex", AssetDatabase.LoadAssetAtPath<Texture2D>(atlasPath));
+            var paperMat = template ? new Material(template) : new Material(Shader.Find("Universal Render Pipeline/Lit"));
+            paperMat.name = "OlMac_Paper";
+            foreach (string p in new[] { "_BaseMap", "_MainTex", "_BaseColorMap" })
+                if (paperMat.HasProperty(p)) paperMat.SetTexture(p, atlasTex);
+            foreach (string p in new[] { "_BaseColor", "_Color" })
+                if (paperMat.HasProperty(p)) paperMat.SetColor(p, Color.white);
+            if (paperMat.HasProperty("_BumpMap")) paperMat.SetTexture("_BumpMap", null);
+            if (paperMat.HasProperty("_Smoothness")) paperMat.SetFloat("_Smoothness", 0f);
+            if (paperMat.HasProperty("_Metallic")) paperMat.SetFloat("_Metallic", 0f);
+            // Cut out the see-through background
+            if (paperMat.HasProperty("_AlphaClip")) paperMat.SetFloat("_AlphaClip", 1f);
+            if (paperMat.HasProperty("_Cutoff")) paperMat.SetFloat("_Cutoff", 0.5f);
+            paperMat.EnableKeyword("_ALPHATEST_ON");
+            paperMat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.AlphaTest;
+            // Glow a bit so he looks like a flat cartoon, not a dark shaded card
+            if (paperMat.HasProperty("_EmissionMap")) paperMat.SetTexture("_EmissionMap", atlasTex);
+            if (paperMat.HasProperty("_EmissionColor")) paperMat.SetColor("_EmissionColor", new Color(0.55f, 0.55f, 0.55f));
+            paperMat.EnableKeyword("_EMISSION");
+            paperMat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
             AssetDatabase.CreateAsset(paperMat, paperMatPath);
+            Debug.Log($"[OlMac] Paper material shader: {paperMat.shader.name} | AlphaClip:{paperMat.HasProperty("_AlphaClip")} Cutoff:{paperMat.HasProperty("_Cutoff")} Emission:{paperMat.HasProperty("_EmissionMap")}");
 
+            // Body material: exactly as v0.1, because the body DID come out invisible with it.
+            // (Only used by the creature's body/hands. The banjo's renderer is simply switched off.)
+            Shader invisShader = Shader.Find("OlMac/Invisible") ?? throw new Exception("Shader OlMac/Invisible not found");
             string invisMatPath = $"{Gen}/OlMac_Invisible.mat";
             AssetDatabase.DeleteAsset(invisMatPath);
             var invisMat = new Material(invisShader) { name = "OlMac_Invisible" };
@@ -151,12 +173,12 @@ namespace FluidLove
             string paperPrefab = $"{Root}/{PaperId}.prefab";
             MakeItemPrefab(paperPrefab, PaperId, paperMesh, paperMat,
                 colliderCentre: Vector3.zero, colliderSize: new Vector3(0.05f, 0.05f, 0.05f),
-                gripLength: 0.05f, audio: null);
+                gripLength: 0.05f, audio: null, hideMesh: true, paper: paperMat);
 
             string banjoPrefab = $"{Root}/{BanjoId}.prefab";
-            MakeItemPrefab(banjoPrefab, BanjoId, banjoMesh, invisMat,
+            MakeItemPrefab(banjoPrefab, BanjoId, banjoMesh, paperMat,
                 colliderCentre: PotCentre, colliderSize: PotSize,
-                gripLength: NeckLength * 0.4f, audio: container);
+                gripLength: NeckLength * 0.4f, audio: container, hideMesh: true, paper: null);
 
             var entries = new List<(string path, string address)>
             {
@@ -193,6 +215,8 @@ namespace FluidLove
             atlas.SetPixels32(new Color32[atlas.width * atlas.height]);
             for (int i = 0; i < walk.Count; i++) Blit(walk[i], uw, atlas, i * CellSize, CellSize, scale);
             for (int i = 0; i < attack.Count; i++) Blit(attack[i], ua, atlas, i * CellSize, 0, scale);
+            // Walk only has 5 frames; fill the 6th cell with frame 3 so the loop never shows a blank
+            if (walk.Count < Columns) Blit(walk[2], uw, atlas, walk.Count * CellSize, CellSize, scale);
             atlas.Apply();
 
             string atlasPath = $"{Gen}/OlMac_Atlas.png";
@@ -344,8 +368,101 @@ namespace FluidLove
 
         // ------------------------------------------------------------------ prefabs (same proven template as the album weapons)
 
+        static Material FindTemplateMaterial()
+        {
+            foreach (string g in AssetDatabase.FindAssets("OrangeItem t:Material"))
+            {
+                var m = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(g));
+                if (m) { Debug.Log($"[OlMac] Template material {m.name} uses shader {m.shader.name}"); return m; }
+            }
+            Debug.LogWarning("[OlMac] OrangeItem material not found, falling back to URP Lit");
+            return null;
+        }
+
+        // Paper Mac as two particles that always stand upright and face the player (Vertical Billboard).
+        // Each plays one row of the atlas. An LOD Group swaps them by distance: close = flail, far = walk.
+        // All built-in Unity components, no scripts, no custom shaders.
+        static void AddPaperParticles(GameObject root, Material mat)
+        {
+            var paper = new GameObject("Paper");
+            paper.transform.SetParent(root.transform, false);
+
+            ParticleSystemRenderer Make(string name, int row, int frames)
+            {
+                var go = new GameObject(name);
+                go.transform.SetParent(paper.transform, false);
+                var ps = go.AddComponent<ParticleSystem>();
+                ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+                const float life = 1000f;
+                var main = ps.main;
+                main.loop = true;
+                main.duration = life;
+                main.startLifetime = life;
+                main.startSpeed = 0f;
+                main.startSize = 2.0f;           // Mac is about 1.8m inside a 2m square
+                main.startRotation = 0f;
+                main.startColor = Color.white;
+                main.gravityModifier = 0f;
+                main.maxParticles = 1;
+                main.simulationSpace = ParticleSystemSimulationSpace.Local;
+                main.scalingMode = ParticleSystemScalingMode.Hierarchy;
+                main.playOnAwake = true;
+                main.cullingMode = ParticleSystemCullingMode.AlwaysSimulate;
+
+                var em = ps.emission;
+                em.enabled = true;
+                em.rateOverTime = 0f;
+                em.SetBursts(new[] { new ParticleSystem.Burst(0f, 1) });
+
+                var shape = ps.shape;
+                shape.enabled = false;
+
+                var tsa = ps.textureSheetAnimation;
+                tsa.enabled = true;
+                tsa.mode = ParticleSystemAnimationMode.Grid;
+                tsa.numTilesX = Columns;
+                tsa.numTilesY = Rows;
+                tsa.animation = ParticleSystemAnimationType.SingleRow;
+#pragma warning disable 0618
+                tsa.useRandomRow = false;
+#pragma warning restore 0618
+                tsa.rowIndex = row;              // row 0 = top of the atlas
+                tsa.frameOverTime = new ParticleSystem.MinMaxCurve(1f, AnimationCurve.Linear(0f, 0f, 1f, 1f));
+                tsa.cycleCount = Mathf.RoundToInt(life * 8f / Columns); // about 8 frames a second
+
+                var r = go.GetComponent<ParticleSystemRenderer>();
+                r.renderMode = ParticleSystemRenderMode.VerticalBillboard;
+                r.sharedMaterial = mat;
+                r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                r.receiveShadows = false;
+                r.alignment = ParticleSystemRenderSpace.View;
+                r.minParticleSize = 0f;
+                r.maxParticleSize = 10f;          // default 0.5 would shrink him when he's right in your face
+                // Pull the drawing ~0.4m towards whoever's looking, so it always sits in front of
+                // the leftover head and shorts and hides them, from every angle.
+                r.pivot = new Vector3(0f, 0f, -0.2f);
+                return r;
+            }
+
+            var walkR = Make("Walk", 0, 6);
+            var attackR = Make("Attack", 1, 6);
+
+            var lod = paper.AddComponent<LODGroup>();
+            lod.localReferencePoint = Vector3.zero;
+            lod.size = 2f;
+            lod.fadeMode = LODFadeMode.None;
+            // Fills ~45% of your view height = roughly 2m away
+            lod.SetLODs(new[]
+            {
+                new LOD(0.45f, new Renderer[] { attackR }),
+                new LOD(0.002f, new Renderer[] { walkR }),
+            });
+        }
+
         static void MakeItemPrefab(string prefabPath, string itemId, Mesh mesh, Material mat,
-            Vector3 colliderCentre, Vector3 colliderSize, float gripLength, AudioContainer audio)
+            Vector3 colliderCentre, Vector3 colliderSize, float gripLength, AudioContainer audio,
+            bool hideMesh, Material paper)
         {
             string templatePath = AssetDatabase.FindAssets("ProtoMaul t:Prefab").Select(AssetDatabase.GUIDToAssetPath)
                 .FirstOrDefault(p => Path.GetFileNameWithoutExtension(p) == "ProtoMaul");
@@ -371,6 +488,8 @@ namespace FluidLove
                 mr.sharedMaterials = new[] { mat };
                 mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                 mr.receiveShadows = false;
+                if (hideMesh) mr.enabled = false;
+                if (paper != null) AddPaperParticles(go, paper);
 
                 Transform cols = T("Colliders");
                 cols.localPosition = Vector3.zero; cols.localRotation = Quaternion.identity;
@@ -527,7 +646,7 @@ namespace FluidLove
             g.exportAfterBuild = false;
             g.modDescription = "Ol' Mac, the paper chicken man. Banjo in hand, Old Mac Daddy on every hit.";
             g.modAuthor = "Fluid Love";
-            g.modVersion = "0.1";
+            g.modVersion = "0.2";
             EditorUtility.SetDirty(g);
             AssetDatabase.SaveAssets();
             if (!g.CheckAddressableLabels(out string msg)) Debug.LogWarning("[OlMac] Label check: " + msg);
