@@ -677,7 +677,7 @@ namespace FluidLove
             g.exportAfterBuild = false;
             g.modDescription = "Ol' Mac, the paper chicken man. Banjo in hand, Old Mac Daddy on every hit.";
             g.modAuthor = "Fluid Love";
-            g.modVersion = "0.3";
+            g.modVersion = "0.4";
             EditorUtility.SetDirty(g);
             AssetDatabase.SaveAssets();
             if (!g.CheckAddressableLabels(out string msg)) Debug.LogWarning("[OlMac] Label check: " + msg);
@@ -701,6 +701,15 @@ namespace FluidLove
             if (Directory.Exists(catalog)) AssetBundleBuilder.CopyDirectory(catalog, outDir);
             else Debug.LogWarning("[OlMac] No JSON catalog folder at " + catalog);
             AssetBundleBuilder.CopyDirectory(AssetBundleBuilderGUI.GenerateManifest(group), outDir);
+
+            // The runtime script (hides the human, drives the drawing). Unity already compiled it for Android.
+            string dll = Path.Combine(projectRoot, "Library", "ScriptAssemblies", "OlMac.Scripts.dll");
+            if (File.Exists(dll))
+            {
+                File.Copy(dll, Path.Combine(outDir, "OlMac.Scripts.dll"), true);
+                Debug.Log("[OlMac] Script DLL included");
+            }
+            else Debug.LogError("[OlMac] OlMac.Scripts.dll not found at " + dll + " - the mod will run without the script");
 
             var files = Directory.GetFiles(outDir, "*", SearchOption.AllDirectories);
             Debug.Log($"[OlMac] DONE. Exported {files.Length} files to {outDir}");
