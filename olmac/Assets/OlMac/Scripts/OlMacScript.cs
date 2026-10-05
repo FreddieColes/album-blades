@@ -163,11 +163,32 @@ namespace FluidLove.OlMac
 
             if (!quadMesh)
             {
+                // Two separate faces (front + back), each with its own corners and normals.
+                // v0.4 shared corners between both faces, the normals cancelled to zero and the
+                // game's lit shader drew him black.
+                var bl = new Vector3(-0.5f, 0, 0); var br = new Vector3(0.5f, 0, 0);
+                var tr = new Vector3(0.5f, 1, 0);  var tl = new Vector3(-0.5f, 1, 0);
                 quadMesh = new Mesh { name = "OlMacQuad" };
-                quadMesh.vertices = new[] { new Vector3(-0.5f, 0, 0), new Vector3(0.5f, 0, 0), new Vector3(0.5f, 1, 0), new Vector3(-0.5f, 1, 0) };
-                quadMesh.uv = new[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1) };
-                quadMesh.triangles = new[] { 0, 2, 1, 0, 3, 2, 0, 1, 2, 0, 2, 3 }; // visible from both sides
-                quadMesh.RecalculateNormals();
+                quadMesh.vertices = new[] { bl, br, tr, tl, bl, br, tr, tl };
+                quadMesh.uv = new[]
+                {
+                    new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1),
+                    new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1),
+                };
+                quadMesh.normals = new[]
+                {
+                    Vector3.back, Vector3.back, Vector3.back, Vector3.back,             // faces -Z
+                    Vector3.forward, Vector3.forward, Vector3.forward, Vector3.forward, // faces +Z
+                };
+                var white = Color.white;
+                quadMesh.colors = new[] { white, white, white, white, white, white, white, white };
+                quadMesh.tangents = new[]
+                {
+                    new Vector4(1, 0, 0, 1), new Vector4(1, 0, 0, 1), new Vector4(1, 0, 0, 1), new Vector4(1, 0, 0, 1),
+                    new Vector4(-1, 0, 0, 1), new Vector4(-1, 0, 0, 1), new Vector4(-1, 0, 0, 1), new Vector4(-1, 0, 0, 1),
+                };
+                // Unity front faces are clockwise as seen by the viewer
+                quadMesh.triangles = new[] { 0, 3, 2, 0, 2, 1,   4, 5, 6, 4, 6, 7 };
                 quadMesh.bounds = new Bounds(new Vector3(0, 0.5f, 0), new Vector3(1.5f, 1.5f, 1.5f));
             }
 
