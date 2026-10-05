@@ -84,7 +84,11 @@
     ],
     "length": 2, "preWrapMode": "ClampForever", "postWrapMode": "ClampForever"
   },
-  "modules": [],
+  "modules": [
+    {
+      "$type": "FluidLove.OlMac.OlMacPaperModule, OlMac.Scripts"
+    }
+  ],
   "colliderGroups": [
     {
       "$type": "ThunderRoad.ItemData+ColliderGroup, ThunderRoad",

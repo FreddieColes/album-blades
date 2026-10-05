@@ -1,174 +1,164 @@
-// Ol' Mac runtime script (ThunderScript: loads automatically from the mod's DLL, no JSON needed).
-// For every live Ol' Mac it:
+// Ol' Mac runtime script. Attached to the Paper Mac item through its JSON (ItemModule),
+// so it starts on every Ol' Mac as soon as he spawns with the drawing on his hip.
+// For that Ol' Mac it:
 //   - hides every human mesh on him (body, head, shorts, eyes) and keeps them hidden
 //   - draws Paper Mac on his skeleton: leans with his spine, falls with his ragdoll, faces you
 //   - walks when moving, stands still when idle, flails when his hand is swinging,
 //     flips to face the way he's walking, and freezes on one frame when he dies
-// If this DLL doesn't load, the v0.3 particle drawing on his hip still works as a fallback.
-using System.Collections.Generic;
+// Spawned on its own from the item book (no creature), it leaves the particle drawing alone.
 using ThunderRoad;
 using UnityEngine;
 
 namespace FluidLove.OlMac
 {
-    public class OlMacScript : ThunderScript
+    public class OlMacPaperModule : ItemModule
     {
-        const string CreatureId = "OlMac";
+        public override void OnItemLoaded(Item item)
+        {
+            base.OnItemLoaded(item);
+            if (!item.gameObject.GetComponent<OlMacPaper>()) item.gameObject.AddComponent<OlMacPaper>();
+        }
+    }
+
+    public class OlMacPaper : MonoBehaviour
+    {
         const float Size = 2.4f;            // metres, square the drawing sits in
         const int Columns = 6, Rows = 2;    // atlas: row 0 walk, row 1 attack
         const float WalkFps = 8f, AttackFps = 10f;
         const float SpineLean = 0.7f;       // 0 = always upright, 1 = fully follows his spine
 
-        class Mac
-        {
-            public Creature creature;
-            public Transform hips, head, hand;
-            public GameObject quad;
-            public Material mat;
-            public float hipHeight = 1f;
-            public bool hipMeasured;
-            public Vector3 lastHips, lastHandRel;
-            public bool faceLeft;
-            public float attackUntil, attackStart;
-            public float nextHide;
-            public bool fallbackHidden;
-        }
+        Creature creature;
+        Transform hips, head, hand;
+        GameObject quad;
+        Material mat;
+        Renderer[] fallback;
+        float hipHeight = 1f;
+        bool hipMeasured;
+        Vector3 lastHips, lastHandRel;
+        bool faceLeft;
+        float attackUntil, attackStart, nextHide, nextFind, bornAt;
 
-        readonly Dictionary<Creature, Mac> macs = new Dictionary<Creature, Mac>();
-        readonly List<Creature> gone = new List<Creature>();
         static Mesh quadMesh;
-        float nextScan;
+        static readonly string[] TexProps = { "_BaseMap", "_MainTex", "_BaseColorMap" };
 
-        public override void ScriptLateUpdate()
+        void OnEnable() { bornAt = Time.time; creature = null; }
+
+        void OnDisable() { if (quad) quad.SetActive(false); }
+
+        void OnDestroy() { if (quad) Destroy(quad); if (mat) Destroy(mat); }
+
+        void LateUpdate()
         {
-            base.ScriptLateUpdate();
             float t = Time.time;
 
-            if (t >= nextScan)
+            // Who's carrying us? (Only an Ol' Mac creature counts.)
+            if (!creature)
             {
-                nextScan = t + 0.5f;
-                Scan();
+                if (t < nextFind) return;
+                nextFind = t + 0.25f;
+                Creature c = GetComponentInParent<Creature>();
+                if (!c || c.data == null || c.data.id != "OlMac") { if (quad) quad.SetActive(false); return; }
+                Attach(c);
+            }
+            else if (GetComponentInParent<Creature>() != creature)
+            {
+                // Pulled off his hip (e.g. grabbed by the player) - go back to the plain drawing
+                Detach();
+                return;
             }
 
-            Vector3 cam = CameraPos();
-            gone.Clear();
-            foreach (var kv in macs)
-            {
-                Mac m = kv.Value;
-                if (m.creature == null || !m.creature.gameObject.activeInHierarchy) { gone.Add(kv.Key); continue; }
-                try { Tick(m, cam, t); }
-                catch (System.Exception e) { Debug.LogWarning("[OlMac] " + e.Message); }
-            }
-            foreach (var c in gone)
-            {
-                if (macs.TryGetValue(c, out Mac m) && m.quad) Object.Destroy(m.quad);
-                macs.Remove(c);
-            }
-        }
+            if (!quad && !MakeQuad()) return;
+            quad.SetActive(true);
 
-        void Scan()
-        {
-            foreach (Creature c in Creature.allActive)
-            {
-                if (c == null || macs.ContainsKey(c) || c.data == null || c.data.id != CreatureId) continue;
-                var m = new Mac { creature = c };
-                Animator a = c.animator;
-                if (a)
-                {
-                    m.hips = a.GetBoneTransform(HumanBodyBones.Hips);
-                    m.head = a.GetBoneTransform(HumanBodyBones.Head);
-                    m.hand = a.GetBoneTransform(HumanBodyBones.RightHand);
-                }
-                if (!m.hips) m.hips = c.transform;
-                if (!m.head) m.head = m.hips;
-                m.lastHips = m.hips.position;
-                macs[c] = m;
-            }
-        }
+            if (t >= nextHide) { nextHide = t + 0.25f; HideHuman(); }
 
-        static Vector3 CameraPos()
-        {
-            if (Camera.main) return Camera.main.transform.position;
-            return Vector3.zero;
-        }
-
-        void Tick(Mac m, Vector3 cam, float t)
-        {
-            Creature c = m.creature;
             float dt = Mathf.Max(Time.deltaTime, 0.0001f);
-
-            // Build our drawing once we can borrow the material from the hip particle fallback
-            if (!m.quad && !MakeQuad(m)) return;
-
-            // Hide human meshes + the particle fallback (re-done regularly because the game re-enables some)
-            if (t >= m.nextHide)
-            {
-                m.nextHide = t + 0.25f;
-                HideHuman(m);
-            }
-
-            bool dead = c.isKilled;
-            Vector3 hips = m.hips.position;
-            Vector3 spine = (m.head.position - hips);
+            bool dead = creature.isKilled;
+            Vector3 hp = hips.position;
+            Vector3 spine = head.position - hp;
             spine = spine.sqrMagnitude > 0.0001f ? spine.normalized : Vector3.up;
 
-            if (!dead && !m.hipMeasured && t > 0.5f)
+            if (!dead && !hipMeasured && t - bornAt > 0.5f)
             {
-                float h = hips.y - c.transform.position.y;
-                if (h > 0.6f && h < 1.3f) { m.hipHeight = h; m.hipMeasured = true; }
+                float h = hp.y - creature.transform.position.y;
+                if (h > 0.6f && h < 1.3f) { hipHeight = h; hipMeasured = true; }
             }
 
             // Lean with the body when alive, follow it completely when dead
             Vector3 up = dead ? spine : Vector3.Slerp(Vector3.up, spine, SpineLean).normalized;
-            Vector3 feet = hips - up * m.hipHeight;
+            Vector3 feet = hp - up * hipHeight;
 
             // Face the camera, turning only around his own up axis
+            Vector3 cam = Camera.main ? Camera.main.transform.position : hp + creature.transform.forward;
             Vector3 n = cam - (feet + up * Size * 0.5f);
             n -= up * Vector3.Dot(n, up);
-            if (n.sqrMagnitude < 0.0001f) n = c.transform.forward;
-            m.quad.transform.SetPositionAndRotation(feet, Quaternion.LookRotation(-n.normalized, up));
-            m.quad.transform.localScale = Vector3.one * Size;
+            if (n.sqrMagnitude < 0.0001f) n = creature.transform.forward;
+            quad.transform.SetPositionAndRotation(feet, Quaternion.LookRotation(-n.normalized, up));
+            quad.transform.localScale = Vector3.one * Size;
 
             // Movement: walk vs idle, and which way he's facing
-            Vector3 vel = (hips - m.lastHips) / dt;
-            m.lastHips = hips;
+            Vector3 vel = (hp - lastHips) / dt;
+            lastHips = hp;
             Vector3 flatVel = new Vector3(vel.x, 0, vel.z);
-            Vector3 view = hips - cam; view.y = 0;
+            Vector3 view = hp - cam; view.y = 0;
             Vector3 camRight = view.sqrMagnitude > 0.0001f ? Vector3.Cross(Vector3.up, view.normalized) : Vector3.right;
             float lateral = Vector3.Dot(flatVel, camRight);
-            if (lateral < -0.15f) m.faceLeft = true;
-            else if (lateral > 0.15f) m.faceLeft = false;
+            if (lateral < -0.15f) faceLeft = true;
+            else if (lateral > 0.15f) faceLeft = false;
 
-            // Attack: his weapon hand whipping around fast relative to his hips
-            if (m.hand)
+            // Attack: weapon hand whipping round fast relative to his hips
+            if (hand)
             {
-                Vector3 rel = m.hand.position - hips;
-                float handSpeed = (rel - m.lastHandRel).magnitude / dt;
-                m.lastHandRel = rel;
+                Vector3 rel = hand.position - hp;
+                float handSpeed = (rel - lastHandRel).magnitude / dt;
+                lastHandRel = rel;
                 if (!dead && handSpeed > 2.2f)
                 {
-                    if (t > m.attackUntil) m.attackStart = t;
-                    m.attackUntil = t + 0.5f;
+                    if (t > attackUntil) attackStart = t;
+                    attackUntil = t + 0.5f;
                 }
             }
 
             int row, col;
             bool mirror = false;
-            if (dead) { row = 1; col = 0; }                       // frozen, arms out
-            else if (t < m.attackUntil) { row = 1; col = (int)((t - m.attackStart) * AttackFps) % 6; }
-            else if (flatVel.magnitude > 0.25f) { row = 0; col = (int)(t * WalkFps) % 6; mirror = m.faceLeft; }
-            else { row = 0; col = 0; mirror = m.faceLeft; }        // standing still
+            if (dead) { row = 1; col = 0; }                                     // frozen, arms out
+            else if (t < attackUntil) { row = 1; col = (int)((t - attackStart) * AttackFps) % 6; }
+            else if (flatVel.magnitude > 0.25f) { row = 0; col = (int)(t * WalkFps) % 6; mirror = faceLeft; }
+            else { row = 0; col = 0; mirror = faceLeft; }                       // standing still
 
-            SetFrame(m, row, col, mirror);
+            SetFrame(row, col, mirror);
         }
 
-        bool MakeQuad(Mac m)
+        void Attach(Creature c)
         {
-            Material src = null;
-            foreach (var r in m.creature.GetComponentsInChildren<ParticleSystemRenderer>(true))
+            creature = c;
+            Animator a = c.animator;
+            if (a)
             {
-                if (r.sharedMaterial && r.gameObject.name == "Walk") { src = r.sharedMaterial; break; }
+                hips = a.GetBoneTransform(HumanBodyBones.Hips);
+                head = a.GetBoneTransform(HumanBodyBones.Head);
+                hand = a.GetBoneTransform(HumanBodyBones.RightHand);
             }
+            if (!hips) hips = c.transform;
+            if (!head) head = hips;
+            lastHips = hips.position;
+            hipMeasured = false;
+            bornAt = Time.time;
+            nextHide = 0f;
+        }
+
+        void Detach()
+        {
+            creature = null;
+            if (quad) quad.SetActive(false);
+            if (fallback != null) foreach (var r in fallback) if (r) r.enabled = true;
+        }
+
+        bool MakeQuad()
+        {
+            fallback = GetComponentsInChildren<ParticleSystemRenderer>(true);
+            Material src = null;
+            foreach (var r in fallback) if (r && r.sharedMaterial) { src = r.sharedMaterial; break; }
             if (!src) return false;
 
             if (!quadMesh)
@@ -176,53 +166,44 @@ namespace FluidLove.OlMac
                 quadMesh = new Mesh { name = "OlMacQuad" };
                 quadMesh.vertices = new[] { new Vector3(-0.5f, 0, 0), new Vector3(0.5f, 0, 0), new Vector3(0.5f, 1, 0), new Vector3(-0.5f, 1, 0) };
                 quadMesh.uv = new[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1) };
-                // Both windings so it's visible from either side
-                quadMesh.triangles = new[] { 0, 2, 1, 0, 3, 2, 0, 1, 2, 0, 2, 3 };
+                quadMesh.triangles = new[] { 0, 2, 1, 0, 3, 2, 0, 1, 2, 0, 2, 3 }; // visible from both sides
                 quadMesh.RecalculateNormals();
                 quadMesh.bounds = new Bounds(new Vector3(0, 0.5f, 0), new Vector3(1.5f, 1.5f, 1.5f));
             }
 
-            m.quad = new GameObject("PaperMac");
-            m.quad.AddComponent<MeshFilter>().sharedMesh = quadMesh;
-            var mr = m.quad.AddComponent<MeshRenderer>();
-            m.mat = new Material(src);
-            mr.sharedMaterial = m.mat;
+            quad = new GameObject("PaperMac");
+            quad.AddComponent<MeshFilter>().sharedMesh = quadMesh;
+            var mr = quad.AddComponent<MeshRenderer>();
+            mat = new Material(src);
+            mr.sharedMaterial = mat;
             mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             mr.receiveShadows = false;
             return true;
         }
 
-        void HideHuman(Mac m)
+        void HideHuman()
         {
-            foreach (Renderer r in m.creature.GetComponentsInChildren<Renderer>(true))
+            foreach (Renderer r in creature.GetComponentsInChildren<Renderer>(true))
             {
                 if (!r) continue;
-                bool onItem = r.GetComponentInParent<Item>() != null;
-                if (!onItem)
+                if (r.GetComponentInParent<Item>() == null)
                 {
-                    // Anything that's part of the human: body, head, shorts, eyes, hair
-                    if (r.enabled) r.enabled = false;
-                }
-                else if (r is ParticleSystemRenderer && (r.gameObject.name == "Walk" || r.gameObject.name == "Attack"))
-                {
-                    // Our own hip fallback drawing, not needed now the script is running
-                    if (r.enabled) r.enabled = false;
+                    if (r.enabled) r.enabled = false;           // body, head, shorts, eyes, hair
                 }
             }
+            if (fallback != null) foreach (var r in fallback) if (r && r.enabled) r.enabled = false; // hip particle drawing
         }
 
-        static readonly string[] TexProps = { "_BaseMap", "_MainTex", "_BaseColorMap" };
-
-        void SetFrame(Mac m, int row, int col, bool mirror)
+        void SetFrame(int row, int col, bool mirror)
         {
             float w = 1f / Columns, h = 1f / Rows;
             Vector2 scale = new Vector2(mirror ? -w : w, h);
             Vector2 offset = new Vector2(mirror ? (col + 1) * w : col * w, (Rows - 1 - row) * h);
             foreach (string p in TexProps)
             {
-                if (!m.mat.HasProperty(p)) continue;
-                m.mat.SetTextureScale(p, scale);
-                m.mat.SetTextureOffset(p, offset);
+                if (!mat.HasProperty(p)) continue;
+                mat.SetTextureScale(p, scale);
+                mat.SetTextureOffset(p, offset);
             }
         }
     }
