@@ -1,7 +1,7 @@
 == date
-Mon Oct  5 07:14:24 UTC 2026
+Mon Oct  5 07:49:43 UTC 2026
 == exit code
-1
+0
 == Key log lines
 10:[Licensing::Module] Trying to connect to existing licensing client channel...
 24:Entitlement-based licensing initiated
@@ -9,69 +9,31 @@ Mon Oct  5 07:14:24 UTC 2026
 27:[Licensing::Client] Error: Code 500 while updating license in client (status: Unable to update licenses. Errors: No ULF license found.,Token not found in cache)
 232:Native extension for LinuxStandalone target not found
 233:Native extension for Android target not found
-670:Assets/OlMac/Scripts/OlMacScript.cs(14,32): error CS0246: The type or namespace name 'ThunderScript' could not be found (are you missing a using directive or an assembly reference?)
-671:Assets/OlMac/Scripts/OlMacScript.cs(42,30): error CS0115: 'OlMacScript.ScriptLateUpdate()': no suitable method found to override
-673:Assets/OlMac/Scripts/OlMacScript.cs(14,32): error CS0246: The type or namespace name 'ThunderScript' could not be found (are you missing a using directive or an assembly reference?)
-674:Assets/OlMac/Scripts/OlMacScript.cs(42,30): error CS0115: 'OlMacScript.ScriptLateUpdate()': no suitable method found to override
-676:Scripts have compiler errors.
+289:Native extension for LinuxStandalone target not found
+290:Native extension for Android target not found
+387:InvalidOperationException: No process is associated with this object.
+546:[OlMac] Target Android
+722:[OlMac] Atlas 3072x1024, scale 0.183
+734:[OlMac] Template material OrangeItem uses shader ThunderRoad/LitMoss - ASshader
+757:[OlMac] Paper material shader: ThunderRoad/LitMoss - ASshader | AlphaClip:True Cutoff:True Emission:False
+916:[OlMac] 3 banjo clips
+1622:[OlMac] Prefab saved: Assets/OlMac/OlMac_Paper.prefab
+2302:[OlMac] Prefab saved: Assets/OlMac/OlMac_Banjo.prefab
+2333:[OlMac] Building asset bundles...
+3340:[OlMac] Script DLL included
+3351:[OlMac] DONE. Exported 14 files to /workspaces/album-blades/dist/OlMac
+3362:[OlMac]   /OlMac.Scripts.dll
+3373:[OlMac]   /catalog_OlMac.hash
+3384:[OlMac]   /catalog_OlMac.json
+3395:[OlMac]   /manifest.json
+3406:[OlMac]   /olmac_assets_all.bundle
+3417:[OlMac]   /Containers/Container_OlMac.json
+3428:[OlMac]   /CreatureTables/CreatureTable_OlMac.json
+3439:[OlMac]   /CreatureTables/CreatureTable_OlMacHead.json
+3450:[OlMac]   /Creatures/Creature_OlMac.json
+3461:[OlMac]   /Items/Item_Wardrobe_OlMac_NoHead.json
+3472:[OlMac]   /Items/Item_Weapon_OlMac_Banjo.json
+3483:[OlMac]   /Items/Item_Weapon_OlMac_Paper.json
+3494:[OlMac]   /Waves/Wave_OlMac.json
+3505:[OlMac]   /Waves/Wave_OlMacHead.json
 == 60 lines before 'compiler errors'
-617--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.ReaderWriter.dll"
-618--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XDocument.dll"
-619--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XPath.XDocument.dll"
-620--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XPath.dll"
-621--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XmlDocument.dll"
-622--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XmlSerializer.dll"
-623--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/netstandard.dll"
-624--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Microsoft.CSharp.dll"
-625--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.ComponentModel.Composition.dll"
-626--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Core.dll"
-627--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Data.DataSetExtensions.dll"
-628--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Data.dll"
-629--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Drawing.dll"
-630--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.IO.Compression.FileSystem.dll"
-631--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.IO.Compression.dll"
-632--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Net.Http.dll"
-633--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Numerics.Vectors.dll"
-634--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Numerics.dll"
-635--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Runtime.Serialization.dll"
-636--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Transactions.dll"
-637--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Xml.Linq.dll"
-638--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Xml.dll"
-639--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.dll"
-640--r:"/workspaces/unity/2021.3.38f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/mscorlib.dll"
-641--r:"Assets/SDK/Plugins/DotNetZip/Ionic.Zip.Unity.dll"
-642--r:"Library/Bee/artifacts/1300b0aE.dag/ThunderRoad.ref.dll"
-643--r:"Library/Bee/artifacts/1300b0aE.dag/UnityEditor.UI.ref.dll"
-644--r:"Library/Bee/artifacts/1300b0aE.dag/UnityEngine.UI.ref.dll"
-645-"Assets/OlMac/Scripts/OlMacScript.cs"
-646--langversion:9.0
-647-/deterministic
-648-/optimize+
-649-/debug:portable
-650-/nologo
-651-/RuntimeMetadataVersion:v4.0.30319
-652-/nowarn:0414
-653-/nowarn:0067
-654-/nowarn:0219
-655-/nowarn:0162
-656-/nowarn:0108
-657-/nowarn:0168
-658-/nowarn:0169
-659-/nowarn:0649
-660-/nowarn:1701
-661-/nowarn:1702
-662-/utf8output
-663-/preferreduilang:en-US
-664-/additionalfile:"Library/Bee/artifacts/1300b0aE.dag/OlMac.Scripts.AdditionalFile.txt"
-665-##### Custom Environment Variables
-666-DOTNET_MULTILEVEL_LOOKUP=0
-667-##### ExitCode
-668-1
-669-##### Output
-670-Assets/OlMac/Scripts/OlMacScript.cs(14,32): error CS0246: The type or namespace name 'ThunderScript' could not be found (are you missing a using directive or an assembly reference?)
-671-Assets/OlMac/Scripts/OlMacScript.cs(42,30): error CS0115: 'OlMacScript.ScriptLateUpdate()': no suitable method found to override
-672-*** Tundra build failed (6.87 seconds), 10 items updated, 1517 evaluated
-673-Assets/OlMac/Scripts/OlMacScript.cs(14,32): error CS0246: The type or namespace name 'ThunderScript' could not be found (are you missing a using directive or an assembly reference?)
-674-Assets/OlMac/Scripts/OlMacScript.cs(42,30): error CS0115: 'OlMacScript.ScriptLateUpdate()': no suitable method found to override
-675-AssetDatabase: script compilation time: 12.041935s
-676:Scripts have compiler errors.
