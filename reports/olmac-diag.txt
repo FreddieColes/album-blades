@@ -1,5 +1,5 @@
 == date
-Mon Oct  5 07:49:43 UTC 2026
+Mon Oct  5 08:41:19 UTC 2026
 == exit code
 0
 == Key log lines
@@ -9,31 +9,31 @@ Mon Oct  5 07:49:43 UTC 2026
 27:[Licensing::Client] Error: Code 500 while updating license in client (status: Unable to update licenses. Errors: No ULF license found.,Token not found in cache)
 232:Native extension for LinuxStandalone target not found
 233:Native extension for Android target not found
-289:Native extension for LinuxStandalone target not found
-290:Native extension for Android target not found
-387:InvalidOperationException: No process is associated with this object.
-546:[OlMac] Target Android
-722:[OlMac] Atlas 3072x1024, scale 0.183
-734:[OlMac] Template material OrangeItem uses shader ThunderRoad/LitMoss - ASshader
-757:[OlMac] Paper material shader: ThunderRoad/LitMoss - ASshader | AlphaClip:True Cutoff:True Emission:False
-916:[OlMac] 3 banjo clips
-1622:[OlMac] Prefab saved: Assets/OlMac/OlMac_Paper.prefab
-2302:[OlMac] Prefab saved: Assets/OlMac/OlMac_Banjo.prefab
-2333:[OlMac] Building asset bundles...
-3340:[OlMac] Script DLL included
-3351:[OlMac] DONE. Exported 14 files to /workspaces/album-blades/dist/OlMac
-3362:[OlMac]   /OlMac.Scripts.dll
-3373:[OlMac]   /catalog_OlMac.hash
-3384:[OlMac]   /catalog_OlMac.json
-3395:[OlMac]   /manifest.json
-3406:[OlMac]   /olmac_assets_all.bundle
-3417:[OlMac]   /Containers/Container_OlMac.json
-3428:[OlMac]   /CreatureTables/CreatureTable_OlMac.json
-3439:[OlMac]   /CreatureTables/CreatureTable_OlMacHead.json
-3450:[OlMac]   /Creatures/Creature_OlMac.json
-3461:[OlMac]   /Items/Item_Wardrobe_OlMac_NoHead.json
-3472:[OlMac]   /Items/Item_Weapon_OlMac_Banjo.json
-3483:[OlMac]   /Items/Item_Weapon_OlMac_Paper.json
-3494:[OlMac]   /Waves/Wave_OlMac.json
-3505:[OlMac]   /Waves/Wave_OlMacHead.json
+290:Native extension for LinuxStandalone target not found
+291:Native extension for Android target not found
+388:InvalidOperationException: No process is associated with this object.
+548:[OlMac] Target Android
+688:[OlMac] Atlas 3072x1024, scale 0.183
+700:[OlMac] Template material OrangeItem uses shader ThunderRoad/LitMoss - ASshader
+723:[OlMac] Paper material shader: ThunderRoad/LitMoss - ASshader | AlphaClip:True Cutoff:True Emission:False
+882:[OlMac] 3 banjo clips
+1588:[OlMac] Prefab saved: Assets/OlMac/OlMac_Paper.prefab
+2268:[OlMac] Prefab saved: Assets/OlMac/OlMac_Banjo.prefab
+2299:[OlMac] Building asset bundles...
+3290:[OlMac] Script DLL included
+3301:[OlMac] DONE. Exported 14 files to /workspaces/album-blades/dist/OlMac
+3312:[OlMac]   /OlMac.Scripts.dll
+3323:[OlMac]   /catalog_OlMac.hash
+3334:[OlMac]   /catalog_OlMac.json
+3345:[OlMac]   /manifest.json
+3356:[OlMac]   /olmac_assets_all.bundle
+3367:[OlMac]   /Containers/Container_OlMac.json
+3378:[OlMac]   /CreatureTables/CreatureTable_OlMac.json
+3389:[OlMac]   /CreatureTables/CreatureTable_OlMacHead.json
+3400:[OlMac]   /Creatures/Creature_OlMac.json
+3411:[OlMac]   /Items/Item_Wardrobe_OlMac_NoHead.json
+3422:[OlMac]   /Items/Item_Weapon_OlMac_Banjo.json
+3433:[OlMac]   /Items/Item_Weapon_OlMac_Paper.json
+3444:[OlMac]   /Waves/Wave_OlMac.json
+3455:[OlMac]   /Waves/Wave_OlMacHead.json
 == 60 lines before 'compiler errors'
